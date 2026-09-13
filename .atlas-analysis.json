@@ -1,0 +1,93 @@
+{
+  "projectType": "cli-tool",
+  "projectName": "Fastfetch Config",
+  "projectDescription": "A TUI-based Bash tool to manage your fastfetch configuration, including logos, modules, colors, and backups.",
+  "theme": "aspen",
+  "primaryColor": "#58a6ff",
+  "lightColor": null,
+  "darkColor": null,
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Command Reference",
+            "pages": [
+              "commands/logo",
+              "commands/modules",
+              "commands/colors",
+              "commands/os-name",
+              "commands/backup-restore",
+              "commands/config-management"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/tui",
+              "guides/chafa-images",
+              "guides/logo-gallery",
+              "guides/updating"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "reference/config-schema",
+              "reference/available-modules",
+              "reference/color-names",
+              "reference/troubleshooting"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Interactive TUI menu for all configuration tasks",
+    "Logo management: built-in, custom ASCII art, and chafa image rendering",
+    "Module add/remove/move/set with position-aware insertion",
+    "150+ named colors plus hex and ANSI code support for logo color slots",
+    "Custom OS name display with random distro picker",
+    "Config backup, restore, diff, export, and import",
+    "Self-update mechanism with stable and testing channels",
+    "Multi-distro dependency installation (Arch, Debian, Fedora, openSUSE, Alpine, Void, Gentoo)",
+    "Built-in logo gallery browser with live preview and apply",
+    "Doctor command to diagnose common setup issues"
+  ],
+  "publicApiSurface": [
+    "fastfetch-config status",
+    "fastfetch-config stats|info",
+    "fastfetch-config logo [name|fit|install|preview|width|height]",
+    "fastfetch-config color <slot> <color>",
+    "fastfetch-config color [list|names|search|reset]",
+    "fastfetch-config chafa [on|off|raw|fit] [file]",
+    "fastfetch-config os|osname [name|random]",
+    "fastfetch-config osname-logo <name> [logo]",
+    "fastfetch-config module [list|add|remove|move|set|eset|toggle|show|reset]",
+    "fastfetch-config backup [name|list|remove]",
+    "fastfetch-config restore <name>",
+    "fastfetch-config export [file]",
+    "fastfetch-config import <file>",
+    "fastfetch-config diff [backup]",
+    "fastfetch-config clean [days]",
+    "fastfetch-config search <term>",
+    "fastfetch-config reset [module]",
+    "fastfetch-config doctor|check",
+    "fastfetch-config update [check|testing]",
+    "fastfetch-config tui|interactive|menu",
+    "fastfetch-config gallery|browse",
+    "fastfetch-config version",
+    "fastfetch-config help",
+    "ff <fastfetch-args>"
+  ]
+}

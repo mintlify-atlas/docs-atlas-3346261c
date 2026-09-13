@@ -1,0 +1,172 @@
+---
+title: "Install fastfetch-config on Linux"
+sidebarTitle: "Installation"
+description: "Install fastfetch-config on Arch, Debian, Fedora, openSUSE, Alpine, Void, or Gentoo with a one-line curl installer. Requires jq, chafa, and imagemagick."
+---
+
+fastfetch-config is distributed as a self-contained Bash installer that downloads and embeds the full script into `~/.local/bin`. Running the one-liner below is all it takes to go from nothing to a working setup — the installer handles dependency detection, config creation, logo installation, and PATH configuration automatically.
+
+<Warning>
+  fastfetch itself must already be installed on your system before using fastfetch-config. The tool manages the fastfetch configuration file and invokes `fastfetch` at runtime, but it does not install fastfetch for you. Install it through your distro's package manager first — for example, `sudo pacman -S fastfetch` on Arch or `sudo apt install fastfetch` on Ubuntu.
+</Warning>
+
+## Prerequisites
+
+Before running the installer, make sure you have:
+
+- **bash** — the installer and the installed scripts require Bash.
+- **curl** — used to download the installer itself.
+- **fastfetch** — must be installed and available in your PATH (see warning above).
+- **sudo access** — required to install missing dependencies (`jq`, `chafa`, `imagemagick`) through your package manager. If all three are already present, sudo is not needed.
+
+## Install commands
+
+<Tabs>
+  <Tab title="Stable">
+    The stable channel is recommended for everyday use. It installs version **V1.6.8**.
+
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/AaronYTDev/fastfetch-config/main/install-ff.sh | bash
+    ```
+  </Tab>
+  <Tab title="Testing">
+    The testing channel installs the latest in-development build, identified as `git-testing`. It tracks new features ahead of formal releases and may contain rough edges.
+
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/AaronYTDev/fastfetch-config/main/install-ff-testing.sh | bash
+    ```
+  </Tab>
+</Tabs>
+
+## What the installer does
+
+<Steps>
+  <Step title="Detects your Linux distribution">
+    The installer sources `/etc/os-release` (or falls back to `lsb_release`) to identify your distro and select the correct package manager for the next step.
+
+    ```
+    :: Detected: arch
+    ```
+  </Step>
+
+  <Step title="Installs missing dependencies">
+    The installer checks whether `jq`, `chafa`, and `imagemagick` (or `ImageMagick` on Fedora/RHEL) are already present. Any that are missing are installed automatically using your distro's package manager. If all three are already installed this step is skipped silently.
+
+    ```
+    :: Checking dependencies...
+    :: Dependencies ready
+    ```
+  </Step>
+
+  <Step title="Installs fastfetch-config to ~/.local/bin">
+    The full `fastfetch-config` script is written to `~/.local/bin/fastfetch-config` and made executable. This is a self-contained script — no further network access is needed after installation.
+
+    ```
+    :: Installed fastfetch-config -> /home/you/.local/bin/fastfetch-config
+    ```
+  </Step>
+
+  <Step title="Installs the ff alias to ~/.local/bin">
+    A thin `ff` wrapper is written to `~/.local/bin/ff`. It simply calls `fastfetch-config "$@"`, so every `fastfetch-config` subcommand is reachable as `ff <subcommand>`.
+
+    ```
+    :: Installed ff alias -> /home/you/.local/bin/ff
+    ```
+  </Step>
+
+  <Step title="Creates the default config file">
+    If a config file does not yet exist at `~/.config/fastfetch/config.jsonc`, the installer writes a default config containing a sensible set of modules. If one already exists, it is replaced unless you pass `-nodelete` (see below).
+
+    ```
+    :: Created default config -> /home/you/.config/fastfetch/config.jsonc
+    ```
+  </Step>
+
+  <Step title="Installs bundled ASCII art logos">
+    A set of bundled ASCII art logos — `dragon`, `sword`, `robot`, `cat`, `pacman`, `dog`, `bear`, and `wolf` — is written to `~/.config/fastfetch/logos/`. These supplement fastfetch's own built-in logos and are available immediately via `ff logo <name>`.
+
+    ```
+    :: Logos directory ready -> /home/you/.config/fastfetch/logos
+    ```
+  </Step>
+
+  <Step title="Adds ~/.local/bin to your PATH">
+    The installer checks your shell RC file (`.bashrc`, `.zshrc`, or `config.fish`) and appends an `export PATH` line if `~/.local/bin` is not already on the path. The change takes effect the next time you reload your shell.
+
+    ```
+    :: Added ~/.local/bin to PATH in .bashrc
+    ```
+  </Step>
+</Steps>
+
+## Supported distributions
+
+| Distribution family | Package manager | Distro IDs detected |
+|---------------------|-----------------|---------------------|
+| Arch | `pacman` | `arch`, `cachyos`, `endeavouros`, `garuda`, `manjaro` |
+| Ubuntu / Debian | `apt` | `ubuntu`, `debian`, `pop`, `linuxmint`, `elementary` |
+| Fedora / RHEL | `dnf` | `fedora`, `centos`, `rhel` |
+| openSUSE | `zypper` | `opensuse*`, `suse` |
+| Alpine | `apk` | `alpine` |
+| Void | `xbps-install` | `void` |
+| Gentoo | `emerge` | `gentoo` |
+
+On any distro not in this list the installer will print a warning and ask you to install `jq`, `chafa`, and `imagemagick` manually before continuing.
+
+## Post-install setup
+
+After the installer completes, reload your shell's PATH so that `ff` becomes available:
+
+```bash
+source ~/.bashrc
+```
+
+If you use Zsh, reload `.zshrc` instead:
+
+```bash
+source ~/.zshrc
+```
+
+Then verify the installation worked:
+
+```bash
+ff version
+```
+
+You should see output like:
+
+```
+fastfetch-config V1.6.8
+```
+
+Run `ff` with no arguments to launch fastfetch with your new config:
+
+```bash
+ff
+```
+
+## The -nodelete flag
+
+By default, reinstalling fastfetch-config replaces your existing `config.jsonc` with a fresh default. If you want to keep your current configuration, pass `-nodelete` to the installer pipe:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/AaronYTDev/fastfetch-config/main/install-ff.sh | bash -s -- -nodelete
+```
+
+When `-nodelete` is detected, the installer skips config regeneration and prints:
+
+```
+:: Config already exists at ~/.config/fastfetch/config.jsonc - Preserving it as -nodelete was used
+```
+
+Your logos directory and the `ff` binary are still updated normally.
+
+## Updating after installation
+
+Once installed, you can update fastfetch-config from the command line without re-running the curl one-liner:
+
+```bash
+ff update            # install latest stable
+ff update testing    # switch to the testing build
+ff update check      # check for a new version without installing
+```

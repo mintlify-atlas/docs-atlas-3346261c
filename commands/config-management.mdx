@@ -1,0 +1,194 @@
+---
+title: "ff export, import, status, and search commands"
+sidebarTitle: "Config Management"
+description: "Export and import fastfetch configs between machines, view current settings, search modules and colors, and check your config file path."
+---
+
+Beyond logo and module management, fastfetch-config provides a set of utility commands for viewing the state of your configuration, moving configs between machines, diagnosing problems, and searching for specific settings. These commands form the operational layer of the tool — helpful for daily use, dotfile management, and troubleshooting.
+
+---
+
+## Status and information
+
+### `ff status` — show current settings
+
+Prints a concise summary of every configurable setting: config file path, active logo, chafa rendering mode, OS name override, logos directory, any active color slot overrides, and the ordered list of enabled modules.
+
+```bash
+ff status
+# Fastfetch config: /home/user/.config/fastfetch/config.jsonc
+# Logo: arch
+# Chafa: disabled
+# OS name: auto
+# Custom logos dir: /home/user/.config/fastfetch/logos
+# Modules: title separator os host kernel uptime packages shell de wm cpu memory swap gpu disk locale break colors
+```
+
+---
+
+### `ff stats` / `ff info` — quick system info and config overview
+
+Runs `fastfetch --logo-type none --pipe` to capture a summary of the live system, then displays config metadata: version, config path, logo source, OS name, module count, and backup count.
+
+```bash
+ff stats
+# System info:
+#   OS: Arch Linux
+#   Kernel: 6.12.0-arch1-1
+#   ...
+#
+# Config:
+#   Version:    V1.6.8
+#   Config:     /home/user/.config/fastfetch/config.jsonc
+#   Logo:       arch
+#   OS name:    auto
+#   Modules:    18
+#   Backups:    4
+```
+
+---
+
+### `ff config-path` — print the config file path
+
+Outputs the absolute path to the active `config.jsonc`. Useful for scripting or passing the path to another tool.
+
+```bash
+ff config-path
+# /home/user/.config/fastfetch/config.jsonc
+```
+
+---
+
+### `ff version` — print version string
+
+```bash
+ff version
+# fastfetch-config V1.6.8
+```
+
+---
+
+## Export and import
+
+### `ff export` — export config to the current directory
+
+Copies the active config to a file named `fastfetch-config-export-YYYYMMDD.jsonc` in the current working directory.
+
+```bash
+ff export
+# Config exported to fastfetch-config-export-20250115.jsonc
+```
+
+---
+
+### `ff export <file>` — export to a named file
+
+```bash
+ff export ~/dotfiles/fastfetch/config.jsonc
+# Config exported to /home/user/dotfiles/fastfetch/config.jsonc
+```
+
+---
+
+### `ff import <file>` — import a config file
+
+Copies `<file>` over the active config. A pre-import backup (`pre-import-YYYYMMDD-HHMMSS.jsonc`) is created automatically before anything is overwritten.
+
+```bash
+ff import ~/dotfiles/fastfetch/config.jsonc
+# Config imported from /home/user/dotfiles/fastfetch/config.jsonc (backup saved)
+```
+
+---
+
+## Search
+
+### `ff search <term>` — search modules and color overrides
+
+Scans the current module list and active color overrides for entries matching `<term>` (case-insensitive). Useful for quickly confirming whether a module or color is active.
+
+```bash
+ff search gpu
+# Matching modules:
+#   gpu
+
+ff search blue
+# Matching colors:
+#   2: #0000FF
+```
+
+---
+
+## Diagnostics
+
+### `ff help` — print full usage text
+
+Displays the complete command reference directly in the terminal.
+
+```bash
+ff help
+```
+
+---
+
+### `ff doctor` / `ff check` — check for setup issues
+
+Verifies the key components of the fastfetch-config environment and reports each result:
+
+- **jq** — present or missing
+- **fastfetch** — present or missing
+- **config.jsonc** — exists and is valid JSON, or is missing/malformed
+- **logos directory** — exists or missing (warning only)
+- **backup directory** — exists or missing (warning only)
+
+```bash
+ff doctor
+# Checking fastfetch-config setup...
+#   [OK] jq found
+#   [OK] fastfetch found
+#   [OK] Config file is valid JSON
+#   [OK] Logos directory exists
+#   [OK] Backup directory exists
+# All good!
+```
+
+---
+
+### `ff diag` / `ff diagnostics` — full diagnostic dump
+
+Prints an extended diagnostic snapshot including jq version, fastfetch version, config path and existence, logos and backup directory file counts, shell and terminal environment variables, current logo source, current OS name setting, chafa mode, and the full module list.
+
+```bash
+ff diag
+# jq: jq-1.7.1
+# fastfetch: fastfetch 2.27.1
+# Config: /home/user/.config/fastfetch/config.jsonc (exists)
+# Logos: /home/user/.config/fastfetch/logos (8 files)
+# Backups: /home/user/.config/fastfetch/backups (4 files)
+# Shell: /bin/bash / Terminal: xterm-256color
+# Current logo: arch
+# Current OS name: auto
+# Chafa: disabled
+# Modules: title separator os host kernel ...
+```
+
+---
+
+## Passthrough behavior
+
+Any argument that `ff` does not recognize as one of its own subcommands is passed **directly to `fastfetch`**. This means you can use `ff` as a drop-in alias for `fastfetch` at any time.
+
+<Note>
+Passthrough is especially useful for one-off fastfetch flags you don't want to persist in the config — for example, quickly testing how fastfetch looks with no logo without changing your saved settings.
+</Note>
+
+```bash
+# Run fastfetch with no logo for this invocation only
+ff --logo-type none
+
+# Use a specific built-in logo for one run
+ff --logo arch
+
+# Pipe fastfetch output to grep
+ff --pipe | grep "CPU"
+```

@@ -1,0 +1,271 @@
+---
+title: "Troubleshoot fastfetch-config setup issues"
+sidebarTitle: "Troubleshooting"
+description: "Diagnose and fix common fastfetch-config problems: missing dependencies, config file errors, PATH issues, logo rendering, and chafa setup."
+---
+
+Most fastfetch-config problems fall into a small set of categories: a missing dependency, a PATH that hasn't been reloaded, or a config file that has become invalid JSON. The built-in `ff doctor` command checks all of these automatically and is the fastest way to get a diagnosis.
+
+## Using `ff doctor`
+
+Run `ff doctor` as your first troubleshooting step. It checks the most common failure points and prints a pass/fail result for each:
+
+```
+Checking fastfetch-config setup...
+  [OK] Config file is valid JSON
+  [OK] Logos directory exists
+  [OK] Backup directory exists
+All good!
+```
+
+If any check fails it prints `[FAIL]` with a description. For a deeper diagnostic that also prints all paths, current logo, OS name, chafa state, and module list, run:
+
+```bash
+ff diag
+```
+
+---
+
+<Accordion title="`ff: command not found` after install">
+
+**Cause:** The installer places both `ff` and `fastfetch-config` in `~/.local/bin`, but that directory is not in your shell's `PATH` in the current session.
+
+**Fix — reload your shell config:**
+
+```bash
+source ~/.bashrc     # Bash
+source ~/.zshrc      # Zsh
+source ~/.config/fish/config.fish   # Fish
+```
+
+Then open a new terminal window. The installer already appended the PATH export to your shell RC file.
+
+**Temporary fix — set PATH for the current session only:**
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+</Accordion>
+
+<Accordion title="`jq is required` error">
+
+**Cause:** fastfetch-config uses `jq` for every config read and write. If `jq` is not installed, all config operations fail immediately.
+
+**Fix — install jq with your package manager:**
+
+```bash
+sudo pacman -S jq          # Arch / Manjaro / CachyOS
+sudo apt install jq        # Ubuntu / Debian / Mint
+sudo dnf install jq        # Fedora / RHEL
+sudo zypper install jq     # openSUSE
+sudo apk add jq            # Alpine
+sudo xbps-install -S jq    # Void Linux
+```
+
+Verify with `command -v jq` after installing.
+
+</Accordion>
+
+<Accordion title="Config file is not valid JSON">
+
+**Cause:** The config file may have been edited manually and introduced invalid JSON (trailing commas, unescaped characters, etc.), or a partial write left it in a broken state.
+
+**Diagnose:**
+
+```bash
+ff doctor
+```
+
+Look for `[FAIL] Config file is not valid JSON`.
+
+**Fix — reset to defaults:**
+
+```bash
+ff reset
+```
+
+`ff reset` automatically saves a timestamped backup (e.g. `pre-reset-20250101-120000`) before overwriting the file, so you can recover your old settings with `ff restore <name>` if needed.
+
+To validate the current file manually without changing anything:
+
+```bash
+jq . ~/.config/fastfetch/config.jsonc
+```
+
+</Accordion>
+
+<Accordion title="Logo not showing or wrong logo is displayed">
+
+**Diagnose:**
+
+```bash
+ff status
+```
+
+This prints the current logo type, source path, and active modules so you can confirm what is configured.
+
+**Revert to distro auto-detection:**
+
+```bash
+ff logo auto
+```
+
+**Resize a logo that is cut off or overlaps the info panel:**
+
+```bash
+ff logo fit
+```
+
+`ff logo fit` reads your current terminal dimensions and calculates an appropriate `width` and `height` for the logo, then writes them to `config.jsonc`.
+
+**Switch to a specific built-in logo:**
+
+```bash
+ff logo arch       # Use fastfetch's built-in Arch logo
+ff gallery         # Browse all built-in logos interactively
+```
+
+</Accordion>
+
+<Accordion title="Chafa image not rendering">
+
+**Check chafa is installed:**
+
+```bash
+command -v chafa
+```
+
+If the command returns nothing, install chafa with your package manager (it is installed automatically by the fastfetch-config installer but may be missing on manual setups).
+
+**Check the image file exists:**
+
+```bash
+ff status   # Shows current logo source path
+ls ~/.config/fastfetch/logos/
+```
+
+**Re-enable chafa from scratch:**
+
+```bash
+ff chafa off
+ff chafa on /path/to/image.png
+```
+
+**Raw mode requires a compatible terminal:**
+
+`chafaRaw` uses raw terminal graphics protocols (Kitty graphics or iTerm2 inline images). If your terminal does not support these, the image will not render or will display as garbled output. Use `ff chafa on` (non-raw) instead:
+
+```bash
+ff chafa on /path/to/image.png    # Normal chafa — works in most terminals
+ff chafa raw /path/to/image.png   # Raw mode — Kitty / iTerm2 only
+```
+
+**Re-fit chafa after resizing your terminal:**
+
+```bash
+ff chafa fit
+```
+
+</Accordion>
+
+<Accordion title="`fastfetch not found`">
+
+**Cause:** fastfetch-config is a **configuration manager** for fastfetch — it does not bundle or install fastfetch itself.
+
+**Fix — install fastfetch separately:**
+
+```bash
+sudo pacman -S fastfetch           # Arch / Manjaro / CachyOS
+sudo apt install fastfetch         # Ubuntu 24.04+ / Debian
+sudo dnf install fastfetch         # Fedora
+sudo zypper install fastfetch      # openSUSE
+```
+
+For distributions without a packaged version, see the [fastfetch releases page](https://github.com/fastfetch-cli/fastfetch/releases) for pre-built binaries.
+
+After installing fastfetch, run `ff doctor` to confirm both tools are detected.
+
+</Accordion>
+
+<Accordion title="Backup file already exists warning">
+
+When you run `ff backup <name>` and a file with that name already exists in `~/.config/fastfetch/backups/`, fastfetch-config prompts you before overwriting:
+
+```
+Backup 'my-backup' already exists. Overwrite? (y/N):
+```
+
+Type `y` to overwrite or anything else to cancel.
+
+**In non-interactive shells** (scripts, cron jobs, pipes), fastfetch-config cannot read from `/dev/tty` and aborts with:
+
+```
+Non-interactive shell — aborting
+```
+
+To avoid this, use a unique name such as a timestamp:
+
+```bash
+ff backup "my-backup-$(date +%Y%m%d-%H%M%S)"
+```
+
+</Accordion>
+
+<Accordion title="Update check fails or shows no output">
+
+**Requirements:** `ff update` fetches the version file from `raw.githubusercontent.com`. The check requires outbound HTTPS access.
+
+**Check for updates verbosely:**
+
+```bash
+ff update check
+```
+
+This prints your current version, the remote version, and whether an update is available, without making any changes.
+
+**Install the latest stable build:**
+
+```bash
+ff update
+```
+
+**Testing build behavior:**
+
+If you installed the testing build (`VERSION=git-testing`), running `ff update` will switch you back to the latest stable release. To reinstall or update the testing build specifically:
+
+```bash
+ff update testing
+```
+
+**If the check prints "Failed to reach GitHub":**
+
+- Confirm internet access: `curl -sL https://raw.githubusercontent.com` should return output (not a connection error).
+- The update check has a 5-second connection timeout and a 10-second total timeout; slow connections may fail silently.
+
+</Accordion>
+
+<Accordion title="Reset vs Restore — which one do I use?">
+
+These two commands are different and serve different purposes:
+
+| Command | What it does |
+|---------|-------------|
+| `ff reset` | Regenerates `config.jsonc` from the built-in default template. Saves a `pre-reset-<timestamp>` backup first. |
+| `ff restore <name>` | Replaces `config.jsonc` with a previously saved backup file from `~/.config/fastfetch/backups/`. |
+
+**Use `ff reset` when:**
+- Your config is broken or invalid JSON and you want a clean slate.
+- You want to return to the default module set and logo settings.
+
+**Use `ff restore` when:**
+- You made changes you regret and want to go back to a known-good state.
+- You previously ran `ff backup <name>` and want to recover that snapshot.
+
+List your available backups with:
+
+```bash
+ff backup list
+```
+
+</Accordion>

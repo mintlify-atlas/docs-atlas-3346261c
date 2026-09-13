@@ -1,0 +1,267 @@
+---
+title: "Named colors for fastfetch-config logo slots"
+sidebarTitle: "Color Names"
+description: "Complete reference of the 150+ named colors available in fastfetch-config, their hex values, organized by color family."
+---
+
+fastfetch-config ships with over 150 named colors that you can assign to logo color slots 1–9. Named colors are resolved at runtime by the `resolve_color` function, which looks up the name in the internal `C` associative array and returns the corresponding hex value. If the input is not a recognized name it is passed through unchanged, so raw hex codes and ANSI codes work too.
+
+## Using colors
+
+```bash
+ff color 1 cyan          # Named color
+ff color 2 "#FF8000"     # Raw hex code (passed through as-is)
+ff color 3 32            # ANSI color code (passed through as-is)
+ff color list            # Show all current color overrides
+ff color reset           # Clear all color overrides
+ff color names           # Print every recognized color name
+ff color search <term>   # Search color names by partial match
+```
+
+<Note>
+  Color names are **case-insensitive** — `Red`, `RED`, and `red` all resolve to the same hex value. The source normalizes input with `tr '[:upper:]' '[:lower:]'` before lookup.
+</Note>
+
+---
+
+## Reds
+
+| Name | Hex |
+|------|-----|
+| `red` | `#FF0000` |
+| `darkred` | `#8B0000` |
+| `firebrick` | `#B22222` |
+| `indianred` | `#CD5C5C` |
+| `lightcoral` | `#F08080` |
+| `salmon` | `#FA8072` |
+| `darksalmon` | `#E9967A` |
+| `tomato` | `#FF6347` |
+| `coral` | `#FF7F50` |
+| `maroon` | `#800000` |
+| `brown` | `#A52A2A` |
+| `crimson` | `#DC143C` |
+| `lightsalmon` | `#FFA07A` |
+| `rosybrown` | `#BC8F8F` |
+| `mistyrose` | `#FFE4E1` |
+| `lavenderblush` | `#FFF0F5` |
+| `scarlet` | `#FF2400` |
+| `ruby` | `#E0115F` |
+| `wine` | `#722F37` |
+
+---
+
+## Oranges & Yellows
+
+| Name | Hex |
+|------|-----|
+| `darkorange` | `#FF8C00` |
+| `orange` | `#FF8000` |
+| `goldenrod` | `#DAA520` |
+| `darkgoldenrod` | `#B8860B` |
+| `gold` | `#FFD700` |
+| `amber` | `#FFBF00` |
+| `yellow` | `#FFFF00` |
+| `peachpuff` | `#FFDAB9` |
+| `navajowhite` | `#FFDEAD` |
+| `khaki` | `#F0E68C` |
+| `darkkhaki` | `#BDB76B` |
+| `bisque` | `#FFE4C4` |
+| `blanchedalmond` | `#FFEBCD` |
+| `papayawhip` | `#FFEFD5` |
+| `moccasin` | `#FFE4B5` |
+| `palegoldenrod` | `#EEE8AA` |
+
+---
+
+## Greens
+
+| Name | Hex |
+|------|-----|
+| `lime` | `#32CD32` |
+| `darkgreen` | `#006400` |
+| `forestgreen` | `#228B22` |
+| `seagreen` | `#2E8B57` |
+| `darkseagreen` | `#8FBC8F` |
+| `mediumseagreen` | `#3CB371` |
+| `springgreen` | `#00FF7F` |
+| `mediumspringgreen` | `#00FA9A` |
+| `lawngreen` | `#7CFC00` |
+| `chartreuse` | `#7FFF00` |
+| `greenyellow` | `#ADFF2F` |
+| `yellowgreen` | `#9ACD32` |
+| `olivedrab` | `#6B8E23` |
+| `olive` | `#808000` |
+| `darkolivegreen` | `#556B2F` |
+| `lightgreen` | `#90EE90` |
+| `palegreen` | `#98FB98` |
+| `emerald` | `#50C878` |
+| `mint` | `#98FF98` |
+| `mediumaquamarine` | `#66CDAA` |
+| `aquamarine` | `#7FFFD4` |
+| `paleturquoise` | `#AFEEEE` |
+| `jade` | `#00A86B` |
+
+---
+
+## Cyans & Teals
+
+| Name | Hex |
+|------|-----|
+| `teal` | `#008080` |
+| `darkcyan` | `#008B8B` |
+| `lightseagreen` | `#20B2AA` |
+| `turquoise` | `#40E0D0` |
+| `mediumturquoise` | `#48D1CC` |
+| `darkturquoise` | `#00CED1` |
+| `cyan` | `#00FFFF` |
+| `lightcyan` | `#E0FFFF` |
+| `azure` | `#F0FFFF` |
+| `skobeloff` | `#007474` |
+| `cadetblue` | `#5F9EA0` |
+| `cerulean` | `#007BA7` |
+
+---
+
+## Blues
+
+| Name | Hex |
+|------|-----|
+| `powderblue` | `#B0E0E6` |
+| `lightblue` | `#ADD8E6` |
+| `skyblue` | `#87CEEB` |
+| `lightskyblue` | `#87CEFA` |
+| `deepskyblue` | `#00BFFF` |
+| `dodgerblue` | `#1E90FF` |
+| `cornflowerblue` | `#6495ED` |
+| `royalblue` | `#4169E1` |
+| `blue` | `#0000FF` |
+| `mediumblue` | `#0000CD` |
+| `darkblue` | `#00008B` |
+| `navy` | `#000080` |
+| `midnightblue` | `#191970` |
+| `steelblue` | `#4682B4` |
+| `diamond` | `#B9F2FF` |
+| `lightsteelblue` | `#B0C4DE` |
+| `mediumslateblue` | `#7B68EE` |
+| `denim` | `#1560BD` |
+| `sapphire` | `#0F52BA` |
+
+---
+
+## Purples & Violets
+
+| Name | Hex |
+|------|-----|
+| `indigo` | `#4B0082` |
+| `lavender` | `#E6E6FA` |
+| `thistle` | `#D8BFD8` |
+| `plum` | `#DDA0DD` |
+| `violet` | `#EE82EE` |
+| `orchid` | `#DA70D6` |
+| `mediumorchid` | `#BA55D3` |
+| `darkorchid` | `#9932CC` |
+| `darkviolet` | `#9400D3` |
+| `blueviolet` | `#8A2BE2` |
+| `mediumpurple` | `#9370DB` |
+| `purple` | `#BF40BF` |
+| `rebeccapurple` | `#663399` |
+| `slateblue` | `#6A5ACD` |
+| `darkslateblue` | `#483D8B` |
+| `lilac` | `#C8A2C8` |
+| `mauve` | `#E0B0FF` |
+
+---
+
+## Pinks
+
+| Name | Hex |
+|------|-----|
+| `pink` | `#FFC0CB` |
+| `hotpink` | `#FF69B4` |
+| `deeppink` | `#FF1493` |
+| `palevioletred` | `#DB7093` |
+| `mediumvioletred` | `#C71585` |
+
+---
+
+## Browns
+
+| Name | Hex |
+|------|-----|
+| `sienna` | `#A0522D` |
+| `saddlebrown` | `#8B4513` |
+| `chocolate` | `#D2691E` |
+| `sandybrown` | `#F4A460` |
+| `peru` | `#CD853F` |
+| `tan` | `#D2B48C` |
+| `burlywood` | `#DEB887` |
+| `wheat` | `#F5DEB3` |
+| `pearl` | `#EAE0C8` |
+| `copper` | `#B87333` |
+| `taupe` | `#483C32` |
+
+---
+
+## Neutrals
+
+| Name | Hex |
+|------|-----|
+| `white` | `#FFFFFF` |
+| `snow` | `#FFFAFA` |
+| `whitesmoke` | `#F5F5F5` |
+| `ghostwhite` | `#F8F8FF` |
+| `aliceblue` | `#F0F8FF` |
+| `gainsboro` | `#DCDCDC` |
+| `lightgray` | `#D3D3D3` |
+| `silver` | `#C0C0C0` |
+| `darkgray` | `#A9A9A9` |
+| `gray` | `#808080` |
+| `dimgray` | `#696969` |
+| `slategray` | `#708090` |
+| `lightslategray` | `#778899` |
+| `darkslategray` | `#2F4F4F` |
+| `charcoal` | `#36454F` |
+| `black` | `#000000` |
+
+---
+
+## Warm Whites & Creams
+
+| Name | Hex |
+|------|-----|
+| `beige` | `#F5F5DC` |
+| `ivory` | `#FFFFF0` |
+| `antiquewhite` | `#FAEBD7` |
+| `linen` | `#FAF0E6` |
+| `seashell` | `#FFF5EE` |
+| `honeydew` | `#F0FFF0` |
+| `oldlace` | `#FDF5E6` |
+| `floralwhite` | `#FFFAF0` |
+| `cornsilk` | `#FFF8DC` |
+| `lemonchiffon` | `#FFFACD` |
+| `lightgoldenrodyellow` | `#FAFAD2` |
+
+---
+
+## Magenta
+
+| Name | Hex |
+|------|-----|
+| `magenta` | `#FF00FF` |
+| `darkmagenta` | `#8B008B` |
+
+---
+
+## Input formats
+
+fastfetch-config accepts three types of color input wherever a color is expected:
+
+| Format | Example | Behaviour |
+|--------|---------|-----------|
+| Named color | `cyan` | Resolved to its hex value from the table above |
+| Hex code | `#FF8000` | Passed through unchanged to the config |
+| ANSI code | `32` | Passed through unchanged (fastfetch interprets it) |
+
+<Tip>
+  Not sure which color to use? Run `ff color search <term>` to find names by partial match — for example `ff color search blue` lists every color containing "blue".
+</Tip>

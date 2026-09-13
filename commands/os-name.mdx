@@ -1,0 +1,125 @@
+---
+title: "ff osname — display a custom OS name in fastfetch"
+sidebarTitle: "osname"
+description: "Override the OS name shown by fastfetch with any string, restore auto-detection, or pick a random distro name from a list of 100+."
+---
+
+By default fastfetch reads your OS name from the system (`/etc/os-release` or equivalent). The `ff osname` command lets you override that with any string you like — whether you want a personalized label, a joke distro name, or a consistent brand across dotfile screenshots. You can also let the tool pick a random distro name from its built-in list of over 100 options, or restore auto-detection at any time.
+
+---
+
+## How it works internally
+
+When you set a custom OS name, fastfetch-config locates the standard `{type: "os", keyIcon: "\uf17c"}` entry in the `modules` array and replaces it with:
+
+```json
+{ "type": "custom", "key": "OS", "format": "<your name>" }
+```
+
+Restoring auto-detection reverses this: the `custom` entry is replaced with the original `{type: "os", keyIcon: "\uf17c"}` object.
+
+---
+
+## Commands
+
+### `ff os` / `ff osname` — print current OS name setting
+
+Running either alias without an argument prints what is currently configured. If no custom name is set, it reports `auto`.
+
+```bash
+ff os
+# Current OS name: auto
+
+ff osname
+# Current OS name: My Custom Distro
+```
+
+---
+
+### `ff osname <name>` — set a custom OS name string
+
+Replaces the `os` module with a `custom` module displaying `<name>`. Quoting is required for names with spaces.
+
+```bash
+ff osname "Arch Linux (btw)"
+# OS name set to: Arch Linux (btw)
+
+ff osname "NixOS — Unstable"
+# OS name set to: NixOS — Unstable
+```
+
+---
+
+### `ff osname auto` — restore auto-detection
+
+Finds the `{type: "custom", key: "OS"}` entry and swaps it back to the standard `os` module with its Linux icon.
+
+```bash
+ff osname auto
+# OS name set to auto-detection
+```
+
+---
+
+### `ff osname random` — pick a random distro name
+
+Selects a random entry from the built-in list of 100+ OS names, prints the choice, and applies it immediately.
+
+```bash
+ff osname random
+# Picked: TempleOS
+# OS name set to: TempleOS
+```
+
+A sample of the available options:
+
+> Arch Linux, Debian, Fedora, Ubuntu, Gentoo, NixOS, FreeBSD, macOS Sequoia, macOS Sonoma, Windows 11, Windows 95, TempleOS, Redox OS, Haiku, SerenityOS, Plan 9, Collapse OS, ReactOS, Fuchsia, SteamOS, Qubes OS, Alpine, Void Linux, KaOS, ArcoLinux, CachyOS, Proxmox, TrueNAS, OpenBSD, and many more.
+
+---
+
+### `ff osname-logo <name>` — set OS name and logo together
+
+When given a single argument, sets **both** the OS name and the logo source to the same value. Convenient for quickly theming around a specific distro aesthetic.
+
+```bash
+ff osname-logo arch
+# OS name set to: arch
+# Logo set to built-in: arch
+```
+
+---
+
+### `ff osname-logo <name> <logo>` — set OS name and logo independently
+
+When given two arguments, sets the OS name to the first and the logo to the second. Useful when the display name and the actual logo name differ.
+
+```bash
+ff osname-logo "EndeavourOS" arch
+# OS name set to: EndeavourOS
+# Logo set to built-in: arch
+```
+
+<Tip>
+Use `ff osname-logo` when building a themed screenshot — the name displayed in the info panel and the art beside it will always stay in sync without needing two separate commands.
+</Tip>
+
+---
+
+## Examples
+
+```bash
+# Set a personal label
+ff osname "Arch Linux (customized)"
+
+# Go random for fun
+ff osname random
+
+# Pair a display name with a matching logo
+ff osname-logo "Arch Linux" arch
+
+# Use a different logo than the OS name suggests
+ff osname-logo "My Homelab Server" debian
+
+# Restore the real OS name
+ff osname auto
+```

@@ -1,0 +1,178 @@
+---
+title: "ff logo — set and manage your fastfetch logo"
+sidebarTitle: "logo"
+description: "Use ff logo to set built-in logos, custom ASCII art files, or image files. Supports auto-detection, manual sizing, and preview."
+---
+
+The `ff logo` command controls every aspect of the logo displayed beside your fastfetch output. You can choose from fastfetch's own library of built-in distro logos, point to a custom ASCII art file stored in `~/.config/fastfetch/logos/`, render a full image through [chafa](https://hpjansson.org/chafa/), or simply let fastfetch detect the right logo for your system automatically. Dimension helpers let you size the logo to your exact terminal without manual trial and error.
+
+## Subcommands
+
+### `logo` — print current logo source
+
+Running `ff logo` with no argument prints the active logo source as configured.
+
+```bash
+ff logo
+# Current logo: arch
+```
+
+---
+
+### `logo <name>` — set a built-in or file logo
+
+Pass a logo name to switch to a fastfetch built-in logo (e.g. `arch`, `debian`, `ubuntu`). If a file with that name exists in `~/.config/fastfetch/logos/`, that file is used instead of a built-in. If the file lives elsewhere on disk, pass the full path — it will be copied into the logos directory automatically.
+
+```bash
+ff logo arch
+ff logo debian
+ff logo ubuntu
+ff logo ~/.config/fastfetch/logos/dragon
+```
+
+Logo type is inferred from the file extension:
+
+| Extension | Type set |
+|---|---|
+| `png`, `jpg`, `jpeg`, `gif`, `bmp`, `webp`, `tiff`, `tif` | `chafa` (image renderer) |
+| Any other extension or no extension | `file` (plain text/ASCII art) |
+| Bare name with no matching file | `builtin` |
+
+---
+
+### `logo auto` — revert to fastfetch auto-detection
+
+Clears the configured source and type, telling fastfetch to detect the logo from your running OS.
+
+```bash
+ff logo auto
+# Logo set to auto-detection
+```
+
+---
+
+### `logo fit` — resize logo dimensions to fit the terminal
+
+Reads the current terminal dimensions (`tput lines` / `tput cols`) and calculates optimal width and height values, then writes them into the config.
+
+- **chafa / chafaRaw logos** — measures the fastfetch info panel width first, then allocates the remaining columns to the logo. Width is clamped between 20 and 80; height is clamped between 5 and 40.
+- **file / builtin logos** — sets height only (`terminal lines − 15`), clamped between 5 and 50. Width and chafa keys are removed to avoid conflicts.
+
+```bash
+ff logo fit
+# Fit: chafa 42x28 @ 220x50 term
+```
+
+<Tip>
+Run `ff logo fit` any time you resize your terminal or switch to a display with different dimensions — this ensures the logo never overflows or looks misaligned.
+</Tip>
+
+---
+
+### `logo preview` / `logo show` / `logo info` — inspect logo settings
+
+All three aliases print the same diagnostic output: logo type, source path, logos directory, and (for chafa logos) the current width × height dimensions.
+
+```bash
+ff logo preview
+# Logo type: chafa
+# Source: /home/user/.config/fastfetch/logos/arch.png
+# Logo dir: /home/user/.config/fastfetch/logos
+# Dimensions: 42x28
+```
+
+---
+
+### `logo install` — install bundled ASCII art logos
+
+Writes the eight ASCII art logos that ship with fastfetch-config into `~/.config/fastfetch/logos/`:
+
+| Name | Description |
+|---|---|
+| `dragon` | Large multi-line dragon |
+| `sword` | Three-line sword |
+| `robot` | ASCII robot figure |
+| `cat` | Classic `/\_/\` cat |
+| `pacman` | Pac-Man and ghost |
+| `dog` | Small side-view dog |
+| `bear` | Symmetrical bear face |
+| `wolf` | Tall wolf silhouette |
+
+```bash
+ff logo install
+# Custom logos installed in /home/user/.config/fastfetch/logos
+
+ff logo dragon    # use the dragon after installing
+```
+
+---
+
+### `logo width <n>` — manually set logo width
+
+Sets the `logo.width` field in the config to the integer `n`. Useful for fine-tuning chafa images without running a full `fit`.
+
+```bash
+ff logo width 40
+# Logo width set to 40
+```
+
+Run without a value to read the current setting:
+
+```bash
+ff logo width
+# Current logo width: 42
+```
+
+---
+
+### `logo height <n>` — manually set logo height
+
+Sets the `logo.height` field to the integer `n`.
+
+```bash
+ff logo height 25
+# Logo height set to 25
+```
+
+Run without a value to read the current setting:
+
+```bash
+ff logo height
+# Current logo height: 28
+```
+
+---
+
+## Logo storage
+
+Custom logos (both ASCII art and images) live in:
+
+```text
+~/.config/fastfetch/logos/
+```
+
+When you pass a file path or a filename to `ff logo`, the tool copies it into this directory. Referencing it by name on future runs works because fastfetch-config checks this directory first before falling back to built-ins.
+
+---
+
+## Full example workflow
+
+```bash
+# 1. Install the bundled ASCII art collection
+ff logo install
+
+# 2. Set the dragon logo
+ff logo dragon
+
+# 3. Fit it to your current terminal
+ff logo fit
+
+# 4. Check what was configured
+ff logo preview
+
+# 5. Override dimensions manually if needed
+ff logo height 20
+
+# 6. Go back to automatic distro detection
+ff logo auto
+```

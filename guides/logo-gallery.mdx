@@ -1,0 +1,152 @@
+---
+title: "Browse and preview logos in the fastfetch gallery"
+sidebarTitle: "Logo Gallery"
+description: "The logo gallery lets you browse all fastfetch built-in logos, search by name, preview any logo live, and apply it to your config with a keypress."
+---
+
+The logo gallery gives you a paginated, searchable browser for every built-in logo that fastfetch ships with. You can preview any logo rendered live in your terminal and apply it to your config with a single keypress — no need to remember logo names or run trial-and-error commands.
+
+## Launching the gallery
+
+Open the gallery directly from the command line using any of these equivalent commands:
+
+```bash
+ff gallery
+ff browse
+ff logos
+```
+
+You can also reach the gallery from inside the TUI by pressing `L` on the main menu.
+
+---
+
+## Gallery UI
+
+The gallery renders inside the same box-drawing frame used by the TUI. The header shows the current page, total pages, and the total number of built-in logos. When a search filter is active a filter indicator is displayed below the logo count.
+
+```
+╔═══════════════════════════════════════════════════════╗
+║ Fastfetch Logo Gallery               Page 1/14        ║
+║ 200 built-in logos                                    ║
+╠═══════════════════════════════════════════════════════╣
+║   1) Arch                                             ║
+║   2) Debian                                           ║
+║   3) Ubuntu                                           ║
+║  ...                                                  ║
+╚═══════════════════════════════════════════════════════╝
+  [n]ext  [p]rev  <num> preview  [/]search  [r]eset  [q]uit
+```
+
+Each page displays up to **15 logos**, numbered sequentially across the full list. The box height stays constant regardless of how many logos are on the current page.
+
+---
+
+## Navigation keys
+
+| Key | Action |
+|-----|--------|
+| `n` or `N` | Go to the next page |
+| `p`, `P`, `b`, or `B` | Go to the previous page |
+| `<number>` + Enter | Preview the logo at that number |
+| `/` | Enter a search query to filter logo names (case-insensitive) |
+| `r` or `R` | Reset the filter and show all logos |
+| `q` or `Q` | Quit the gallery and return to the shell (or TUI) |
+
+<Tip>
+Press `/` and type your distro name to instantly jump to matching logos. For example, typing `arch` narrows the list to all Arch-related logos so you can compare variants quickly.
+</Tip>
+
+---
+
+## Searching and filtering
+
+Pressing `/` drops you into a short prompt:
+
+```
+▸ Query?
+```
+
+Type any part of a logo name and press Enter. The gallery re-renders with only matching logos and updates the page counter and total count accordingly. The filter indicator appears in the header:
+
+```
+║ Filter: arch                                          ║
+```
+
+Press `r` at any time to clear the filter and restore the full list.
+
+If the query matches no logos, the gallery resets to the full list automatically and shows a brief `No matches` notice.
+
+---
+
+## Previewing a logo
+
+Type the number shown next to a logo and press Enter. The gallery clears the screen, prints a preview header, and runs:
+
+```bash
+fastfetch --logo <name> --pipe
+```
+
+The full fastfetch output — logo and info panel together — fills the terminal. After the preview the gallery prompts:
+
+```
+▸ Apply? [y/N]
+```
+
+- Press `y` or `Y` to apply the logo to your config. This calls `set_logo`, which also runs `set_logo_fit` to size the logo for your terminal.
+- Press any other key (or just Enter) to return to the gallery without making changes.
+
+---
+
+## Bundled ASCII art logos
+
+Running `ff logo install` installs a set of hand-crafted ASCII art logos into `~/.config/fastfetch/logos/`. These are separate from fastfetch's built-in logos and are not shown in the gallery browser — use `ff logo <name>` to set them directly.
+
+The bundled logos are:
+
+| Name | Description |
+|------|-------------|
+| `dragon` | Large multi-line ASCII dragon |
+| `sword` | Minimalist sword |
+| `robot` | Small ASCII robot |
+| `cat` | Classic `/\_/\` cat face |
+| `pacman` | Pac-Man and ghost |
+| `dog` | Small ASCII dog |
+| `bear` | Cute ASCII bear |
+| `wolf` | Large ASCII wolf |
+
+```bash
+# Install bundled logos
+ff logo install
+
+# Use a bundled logo
+ff logo dragon
+```
+
+---
+
+## Step-by-step: Find and apply a logo
+
+<Steps>
+  <Step title="Open the gallery">
+    ```bash
+    ff gallery
+    ```
+    The paginated list appears with 15 logos per page.
+  </Step>
+
+  <Step title="Search for your distro">
+    Press `/`, type your distro name (e.g., `fedora`), then press Enter. The list filters to matching logos only.
+  </Step>
+
+  <Step title="Preview a logo">
+    Type the number next to the logo you want and press Enter. fastfetch renders a live preview with that logo.
+  </Step>
+
+  <Step title="Apply the logo">
+    At the `Apply? [y/N]` prompt, press `y`. The logo is written to your config and sized to fit your terminal automatically.
+  </Step>
+
+  <Step title="Exit the gallery">
+    Press `q` to return to the shell. Run `ff` to see your new logo in action.
+  </Step>
+</Steps>

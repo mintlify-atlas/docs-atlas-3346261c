@@ -1,0 +1,127 @@
+---
+title: "Update fastfetch-config to the latest version"
+sidebarTitle: "Updating"
+description: "Use ff update to check for and install the latest stable build. Switch to the testing channel or check for updates without installing."
+---
+
+fastfetch-config ships with a built-in self-update mechanism that compares your installed version against a remote version file on GitHub and downloads the latest installer when a newer build is available. The current stable release is **V1.6.8**.
+
+## Update subcommands
+
+### Check for and install a stable update
+
+```bash
+ff update
+```
+
+Fetches the remote version from:
+
+```
+https://raw.githubusercontent.com/AaronYTDev/fastfetch-config/main/autoupdate_latestversion
+```
+
+Prints your current version and the remote version, then prompts before installing:
+
+```
+Current: V1.6.8
+Remote:  V1.6.9
+Continue with update? (Y/n):
+```
+
+Press Enter or `y` to proceed. The stable install script is downloaded and executed. Press `n` to cancel without making any changes.
+
+### Check for updates without installing
+
+```bash
+ff update check
+```
+
+Performs the same version comparison but **never downloads or installs anything**. Safe to run at any time to find out whether you are on the latest build.
+
+<Tip>
+`ff update check` is the safest way to see whether an update exists. It makes no changes to your system or config.
+</Tip>
+
+### Install the latest testing build
+
+```bash
+ff update testing
+```
+
+Always downloads and installs the current testing build from:
+
+```
+https://raw.githubusercontent.com/AaronYTDev/fastfetch-config/main/install-ff-testing.sh
+```
+
+No version comparison is performed — the testing build is reinstalled unconditionally.
+
+<Warning>
+The testing build (`git-testing`) tracks the latest in-progress changes and may contain bugs or incomplete features. Use the stable channel unless you want to help test new functionality.
+</Warning>
+
+---
+
+## Stable vs testing builds
+
+| Channel | Version string | Recommended for |
+|---------|---------------|-----------------|
+| Stable | e.g., `V1.6.8` | All users |
+| Testing | `git-testing` | Testers and contributors |
+
+### Stable build behaviour
+
+When `VERSION` is a versioned string such as `V1.6.8`, `ff update` uses `sort -V` to compare the local version against the remote version file. If the remote version is strictly greater, the update flow begins. If you are already on the latest version (or ahead of it), the tool prints a friendly confirmation and exits without downloading anything.
+
+### Testing build behaviour
+
+When `VERSION` is `git-testing`:
+
+- `ff update` — installs the **latest stable** build, switching you back to the stable channel.
+- `ff update testing` — reinstalls the **latest testing** build.
+- `ff update check` — prints a notice explaining that the testing build is always the newest and that `ff update` can switch you to stable.
+
+---
+
+## Background update check
+
+Every time you run any `ff` command, fastfetch-config silently checks for updates in the background — but at most **once every 24 hours**. The result is cached in:
+
+```
+~/.config/fastfetch/backups/.update_check
+```
+
+If a newer version is available, a one-line notice is printed before your fastfetch output:
+
+```
+[update] Version V1.6.9 available! Run 'ff update' to install the latest build.
+```
+
+The background check is skipped entirely on the testing build (`git-testing`), since there is no meaningful version to compare against.
+
+---
+
+## Step-by-step: Update to the latest stable build
+
+<Steps>
+  <Step title="Check whether an update is available">
+    ```bash
+    ff update check
+    ```
+    The command prints your current version and the latest remote version. No changes are made.
+  </Step>
+
+  <Step title="Run the update">
+    ```bash
+    ff update
+    ```
+    Confirm the version numbers shown, then press Enter (or `y`) at the prompt to continue.
+  </Step>
+
+  <Step title="Verify the new version">
+    ```bash
+    ff version
+    ```
+    Confirms the installed version matches the remote version that was displayed during the update.
+  </Step>
+</Steps>

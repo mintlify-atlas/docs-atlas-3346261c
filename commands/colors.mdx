@@ -1,0 +1,159 @@
+---
+title: "ff color — set logo color slots 1-9"
+sidebarTitle: "color"
+description: "Override logo color slots 1 through 9 using named colors, hex codes, or ANSI codes. fastfetch-config ships with 150+ named colors."
+---
+
+fastfetch supports up to nine color slots that map to the palette regions defined in a logo file. The `ff color` command writes hex values into the `logo.color` object in your config, letting you retheme any logo without editing it directly. Colors can be specified as friendly names from the built-in library (e.g. `emerald`, `skobeloff`), standard hex codes (`#FF8000`), or raw ANSI escape codes (`32`, `93`).
+
+<Note>
+Color name resolution is **case-insensitive** — `Cyan`, `cyan`, and `CYAN` all resolve to the same hex value.
+</Note>
+
+---
+
+## Subcommands
+
+### `color <slot> <color>` — set a color slot
+
+Sets logo color slot `<slot>` (an integer from 1 to 9) to `<color>`. Named colors are resolved to their hex values before writing; hex codes and ANSI codes are stored as provided.
+
+```bash
+ff color 1 cyan
+# Logo color 1 set to: #00FFFF
+
+ff color 2 emerald
+# Logo color 2 set to: #50C878
+
+ff color 3 "#FF8000"
+# Logo color 3 set to: #FF8000
+
+ff color 4 93
+# Logo color 4 set to: 93
+```
+
+---
+
+### `color list` — show current overrides
+
+Prints every slot that currently has an override set. Slots that have not been configured are omitted.
+
+```bash
+ff color list
+# Current logo color overrides:
+# 1: #00FFFF
+# 2: #50C878
+```
+
+---
+
+### `color names` — list all named colors
+
+Prints all 150+ named color names from the built-in color map, sorted alphabetically. Pipe through a pager if needed.
+
+```bash
+ff color names
+# amber
+# antiquewhite
+# aquamarine
+# azure
+# ...
+```
+
+---
+
+### `color search <term>` — search color names
+
+Filters the color name list to entries that contain `<term>` (case-insensitive). Useful for finding all shades of a particular hue.
+
+```bash
+ff color search blue
+# blue
+# blueviolet
+# cadetblue
+# cornflowerblue
+# darkblue
+# deepskyblue
+# dodgerblue
+# mediumblue
+# midnightblue
+# navy
+# powderblue
+# royalblue
+# skyblue
+# steelblue
+
+ff color search green
+# chartreuse
+# darkgreen
+# darkseagreen
+# emerald
+# forestgreen
+# ...
+```
+
+---
+
+### `color reset` — clear all overrides
+
+Removes all entries from `logo.color`, restoring the logo's original palette.
+
+```bash
+ff color reset
+# All logo color overrides cleared
+```
+
+---
+
+## Color input formats
+
+| Format | Example | Notes |
+|---|---|---|
+| Named color | `cyan`, `emerald`, `skobeloff` | Resolved to hex before saving |
+| Hex code | `#FF8000`, `#58a6ff` | Stored as-is |
+| ANSI code | `32`, `93` | Stored as-is, fastfetch interprets directly |
+
+---
+
+## Named color reference
+
+fastfetch-config ships with over 150 named colors. A curated selection by family:
+
+<Tabs>
+  <Tab title="Reds">
+    `red`, `darkred`, `crimson`, `firebrick`, `indianred`, `lightcoral`, `coral`, `tomato`, `salmon`, `darksalmon`, `lightsalmon`, `maroon`, `rosybrown`, `scarlet`, `ruby`, `wine`
+  </Tab>
+  <Tab title="Blues">
+    `blue`, `deepskyblue`, `dodgerblue`, `royalblue`, `steelblue`, `navy`, `sapphire`, `denim`, `diamond`, `cornflowerblue`, `mediumblue`, `darkblue`, `midnightblue`, `powderblue`, `skyblue`, `lightskyblue`, `mediumslateblue`, `lightsteelblue`
+  </Tab>
+  <Tab title="Greens">
+    `lime`, `darkgreen`, `emerald`, `mint`, `jade`, `seagreen`, `forestgreen`, `springgreen`, `mediumspringgreen`, `lawngreen`, `chartreuse`, `greenyellow`, `yellowgreen`, `olivedrab`, `palegreen`, `lightgreen`, `mediumseagreen`, `darkseagreen`
+  </Tab>
+  <Tab title="Cyans">
+    `cyan`, `teal`, `turquoise`, `skobeloff`, `darkcyan`, `cadetblue`, `lightseagreen`, `mediumturquoise`, `darkturquoise`, `lightcyan`, `azure`, `cerulean`
+  </Tab>
+  <Tab title="Purples">
+    `purple`, `indigo`, `violet`, `mediumpurple`, `rebeccapurple`, `lavender`, `mauve`, `blueviolet`, `darkviolet`, `darkorchid`, `mediumorchid`, `orchid`, `plum`, `thistle`, `slateblue`, `darkslateblue`, `lilac`
+  </Tab>
+  <Tab title="Others">
+    `gold`, `amber`, `orange`, `darkorange`, `goldenrod`, `silver`, `magenta`, `darkmagenta`, `pink`, `hotpink`, `deeppink`, `white`, `black`, `gray`, `charcoal`, `copper`, `pearl`, `taupe`, `brown`, `chocolate`
+  </Tab>
+</Tabs>
+
+---
+
+## Example: themed color scheme
+
+```bash
+# Cyan/teal theme across the first four slots
+ff color 1 cyan
+ff color 2 teal
+ff color 3 skobeloff
+ff color 4 deepskyblue
+
+# Check the result
+ff color list
+
+# Undo everything
+ff color reset
+```

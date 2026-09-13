@@ -1,0 +1,174 @@
+---
+title: "Using the fastfetch-config interactive TUI"
+sidebarTitle: "TUI Menu"
+description: "The fastfetch-config TUI provides a menu-driven interface for all settings. Launch with ff tui and navigate using number keys."
+---
+
+The fastfetch-config TUI gives you a full menu-driven interface to manage every aspect of your fastfetch setup without memorising commands. All options are accessible by pressing a single key — no mouse required.
+
+## Launching the TUI
+
+Open the TUI with any of the following equivalent commands:
+
+```bash
+ff tui
+ff interactive
+ff menu
+```
+
+On startup the TUI performs a quiet background update check (once every 24 hours, cached at `~/.config/fastfetch/backups/.update_check`). If a newer version is available you will see a one-line notice before the menu appears.
+
+## Main Menu Layout
+
+The TUI renders a box-drawing frame with a version header. The full main menu looks like this:
+
+```
+╔═══════════════════════════════════════════════════════╗
+║           fastfetch-config TUI  V1.6.8                ║
+╠═══════════════════════════════════════════════════════╣
+
+  1)  Modules               6)  Chafa
+  2)  Logo                  7)  Reset
+  3)  OS Name               8)  Update
+  4)  Colors                9)  Backup / Restore
+  5)  Status                L)  Logo Gallery
+                            A)  Help
+
+╠═══════════════════════════════════════════════════════╣
+║  0)  Exit                  F)  Pay Respects           ║
+╚═══════════════════════════════════════════════════════╝
+```
+
+Press the highlighted number or letter to enter that section. Press `q` at any sub-menu to go back to the main menu.
+
+## Menu Options
+
+### 1) Modules
+
+Manage the list of information rows that fastfetch displays. The Modules sub-menu offers five actions:
+
+| Key | Action |
+|-----|--------|
+| `1` | Add a module by name (inserted at its default position) |
+| `2` | Remove a module by name |
+| `3` | Move a module to a specific 1-based position |
+| `4` | Set an arbitrary property key/value on a module |
+| `5` | Easy-set — set both the display label (`key`) and `format` in one step |
+
+Available modules include: `title`, `separator`, `os`, `host`, `kernel`, `uptime`, `packages`, `shell`, `de`, `wm`, `cpu`, `memory`, `swap`, `gpu`, `disk`, `locale`, `break`, `colors`.
+
+### 2) Logo
+
+Prompts you to type a logo name (a fastfetch built-in, a file in `~/.config/fastfetch/logos/`, or an absolute path) or enter `auto` to restore automatic distro detection. After setting the logo, `set_logo_fit` runs automatically to resize it for your terminal.
+
+### 3) OS Name
+
+Prompts you to enter a custom OS name string (displayed instead of the real OS) or `auto` to revert to fastfetch's built-in detection.
+
+### 4) Colors
+
+Displays your current logo colour overrides, then prompts for a colour slot number (`1`–`9`) and a colour value. Colours can be specified as a named colour (e.g. `cyan`, `emerald`, `skobeloff`), a hex code (`#FF8000`), or an ANSI code (`93`). Press `q` at the slot prompt to return without making changes.
+
+### 5) Status
+
+Shows a read-only overview of your current configuration in the TUI frame:
+
+- Config file path
+- Current logo source
+- OS name
+- Logos directory path
+- fastfetch-config version
+- Logo colour overrides (if any)
+- Active module list
+
+### 6) Chafa
+
+Controls chafa image rendering. The Chafa sub-menu offers:
+
+| Key | Action |
+|-----|--------|
+| `1` | Enable chafa using the current logo source |
+| `2` | Enable chafa in raw mode |
+| `3` | Enable chafa (normal) and prompt for an image file path |
+| `4` | Enable chafa (raw) and prompt for an image file path |
+| `5` | Disable chafa, revert to auto logo detection |
+| `6` | Re-fit chafa dimensions to the current terminal size |
+
+### 7) Reset
+
+| Key | Action |
+|-----|--------|
+| `1` | Reset the **entire** config to defaults (a timestamped backup is saved first) |
+| `2` | Reset a **single** module to its default definition |
+
+### 8) Update
+
+Runs `self_update` — equivalent to `ff update` from the command line. Compares the local version against the remote version file and prompts `Continue with update? (Y/n)` before downloading.
+
+### 9) Backup / Restore
+
+| Key | Action |
+|-----|--------|
+| `1` | Create a backup (with an optional custom name, or a timestamp) |
+| `2` | List all existing backups |
+| `3` | Restore a backup by name |
+| `4` | Remove a backup by name |
+
+Backups are stored as `.jsonc` files in `~/.config/fastfetch/backups/`.
+
+### L) Logo Gallery
+
+Opens the paginated logo gallery browser where you can browse all fastfetch built-in logos, search by name, preview any logo live, and apply it with a keypress. See the [Logo Gallery guide](/guides/logo-gallery) for full details.
+
+### A) Help
+
+Clears the screen and prints the full `ff help` reference, then waits for Enter before returning to the menu.
+
+### 0) Exit
+
+Closes the TUI cleanly. The terminal is cleared and fastfetch runs once with your current config so you can see the result immediately.
+
+### F) Pay Respects
+
+Prints `F's in the chat`. Press Enter to return to the menu.
+
+---
+
+## Step-by-step: Open TUI, add a module, and exit
+
+<Steps>
+  <Step title="Launch the TUI">
+    ```bash
+    ff tui
+    ```
+    The box-drawing menu appears. Any available update notice is printed above it.
+  </Step>
+
+  <Step title="Open the Modules sub-menu">
+    Press `1` to enter the Modules section. The current module list is shown at the top of the frame.
+  </Step>
+
+  <Step title="Add a module">
+    Press `1` (Add a module). When prompted, type the module name and press Enter:
+
+    ```
+    ▸ Module name to add: swap
+    ```
+
+    The tool inserts `swap` at its default position and confirms:
+
+    ```
+    Added module: swap
+    ```
+
+    Press Enter to continue, then press `6` (or `q`) to go back to the main menu.
+  </Step>
+
+  <Step title="Verify in Status">
+    Press `5` to open the Status screen. Confirm the module list now includes `swap`, then press Enter to return.
+  </Step>
+
+  <Step title="Exit the TUI">
+    Press `0` (or `q`) to exit. The TUI clears the screen and runs fastfetch once so you can see your updated output.
+  </Step>
+</Steps>

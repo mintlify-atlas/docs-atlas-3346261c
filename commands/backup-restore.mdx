@@ -1,0 +1,183 @@
+---
+title: "ff backup — save and restore fastfetch configs"
+sidebarTitle: "backup"
+description: "Save timestamped backups of your fastfetch config, list and restore them, remove old ones, and diff the current config against a backup."
+---
+
+fastfetch-config keeps all backups in `~/.config/fastfetch/backups/` as `.jsonc` files. Every backup command, from manual saves to the automatic pre-reset and pre-import snapshots, writes into that same directory. The `ff restore`, `ff diff`, and `ff clean` commands let you recover from mistakes, compare changes, and keep the directory tidy over time.
+
+---
+
+## Backup directory
+
+```text
+~/.config/fastfetch/backups/
+```
+
+---
+
+## Automatic backups
+
+Certain commands create a backup automatically before they make any destructive change:
+
+| Trigger | Backup name pattern |
+|---|---|
+| `ff reset` (full config reset) | `pre-reset-YYYYMMDD-HHMMSS` |
+| `ff import <file>` | `pre-import-YYYYMMDD-HHMMSS` |
+
+You never lose your previous config when running these commands — the snapshot is always created first.
+
+---
+
+## Commands
+
+### `ff backup` — save a timestamped backup
+
+Creates a backup file named `backup-YYYYMMDD-HHMMSS.jsonc` in the backup directory. If a file with that name already exists you will be prompted before overwriting.
+
+```bash
+ff backup
+# Backup saved: /home/user/.config/fastfetch/backups/backup-20250115-143022.jsonc
+```
+
+---
+
+### `ff backup <name>` — save a backup with a custom name
+
+Saves the current config as `<name>.jsonc`. Useful for labelling checkpoints meaningfully.
+
+```bash
+ff backup before-chafa-experiment
+# Backup saved: /home/user/.config/fastfetch/backups/before-chafa-experiment.jsonc
+```
+
+---
+
+### `ff backup list` — list all backups
+
+Lists every `.jsonc` file in the backup directory alongside its last-modified timestamp.
+
+```bash
+ff backup list
+# Available backups:
+#   backup-20250115-143022          (2025-01-15 14:30:22)
+#   before-chafa-experiment         (2025-01-15 15:01:44)
+#   pre-reset-20250116-090011       (2025-01-16 09:00:11)
+```
+
+---
+
+### `ff backup remove <name>` — delete a specific backup
+
+Removes the named backup permanently. The `.jsonc` extension is added automatically — pass only the base name.
+
+```bash
+ff backup remove before-chafa-experiment
+# Removed backup: before-chafa-experiment
+```
+
+---
+
+### `ff restore <name>` — restore a backup
+
+Overwrites the current `config.jsonc` with the contents of the named backup. No automatic pre-restore snapshot is created, so back up your current config first if needed.
+
+```bash
+ff restore backup-20250115-143022
+# Restored backup: backup-20250115-143022
+```
+
+If the backup name is not found, the command prints an error and suggests running `ff backup list`.
+
+---
+
+### `ff diff` — diff current config against the most recent backup
+
+Runs `diff -u` between the most recently modified backup and the active config. Colour output is enabled when `diff` supports `--color=auto`.
+
+```bash
+ff diff
+# --- backup-20250115-143022
+# +++ current
+# @@ -4,7 +4,7 @@
+# ...
+```
+
+---
+
+### `ff diff <name>` — diff against a named backup
+
+Same as above but targets a specific backup by name.
+
+```bash
+ff diff before-chafa-experiment
+```
+
+---
+
+### `ff clean` — remove backups older than 30 days
+
+Deletes all `.jsonc` files in the backup directory whose modification time is more than 30 days in the past.
+
+```bash
+ff clean
+# Cleaned 3 backup(s) older than 30 days
+```
+
+---
+
+### `ff clean <days>` — remove backups older than N days
+
+Accepts a custom age threshold in days.
+
+```bash
+ff clean 7
+# Cleaned 5 backup(s) older than 7 days
+
+ff clean 90
+# No backups older than 90 days
+```
+
+---
+
+## Typical workflow
+
+<Steps>
+  <Step title="Back up before making changes">
+    Save a named checkpoint before you start experimenting.
+
+    ```bash
+    ff backup my-stable-config
+    ```
+  </Step>
+  <Step title="Make your changes">
+    Try new logos, module layouts, color overrides, or OS names.
+
+    ```bash
+    ff logo dragon
+    ff color 1 emerald
+    ff module remove swap
+    ```
+  </Step>
+  <Step title="Compare what changed">
+    See exactly which lines differ from your saved checkpoint.
+
+    ```bash
+    ff diff my-stable-config
+    ```
+  </Step>
+  <Step title="Restore if needed">
+    If the result isn't what you wanted, roll back instantly.
+
+    ```bash
+    ff restore my-stable-config
+    ```
+  </Step>
+  <Step title="Clean up old backups periodically">
+    Keep the backup directory from growing indefinitely.
+
+    ```bash
+    ff clean 30
+    ```
+  </Step>
+</Steps>

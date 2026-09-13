@@ -1,0 +1,100 @@
+---
+title: "Fastfetch Config: manage fastfetch from the terminal"
+sidebarTitle: "Introduction"
+description: "fastfetch-config is a Bash TUI tool that manages logos, modules, colors, and backups for fastfetch. Works on Arch, Debian, Fedora, and more."
+---
+
+fastfetch-config is a Bash TUI that takes the pain out of maintaining a fastfetch setup. Instead of hand-editing JSON config files every time you want a new logo, a different color, or an extra system module, you run a single short command and the tool handles the JSONC rewriting for you. The installer drops two executables on your system: `fastfetch-config` (the full binary) and the `ff` alias, so the most common invocations stay short enough to type in your sleep.
+
+<Note>
+  fastfetch-config works best on Arch Linux and Arch-based distributions such as CachyOS, EndeavourOS, and Garuda. It runs on a wide range of distros (see below), but those are the environments that receive the most testing.
+</Note>
+
+## What it does
+
+Managing fastfetch without a helper tool means opening `~/.config/fastfetch/config.jsonc`, locating the right JSON key, editing it by hand, saving, and re-running `fastfetch` to check the result — then repeating if something looked off. fastfetch-config replaces that loop with direct commands:
+
+- **Logos** — set any of fastfetch's built-in logos, a bundled ASCII art logo, or a custom image file rendered through chafa, all sized automatically to your terminal.
+- **Colors** — assign named colors (over 150 built-in names such as `emerald`, `skobeloff`, `diamond`, and `crimson`) or raw hex values to each logo color slot.
+- **Modules** — add, remove, reorder, and configure system info modules without touching JSON directly.
+- **OS name** — display any string you like as the OS name, including a random pick from a large built-in list.
+- **Backups** — snapshot and restore any config state with a single command.
+- **TUI** — an interactive terminal menu (`ff tui`) that covers everything above without memorizing subcommands.
+
+## The `ff` alias
+
+Every `fastfetch-config` subcommand is reachable through the short `ff` alias installed alongside the binary. When called with no arguments or with arguments that do not match a known subcommand, `ff` passes everything straight through to `fastfetch` itself — so `ff` becomes the single entry point for both managing your config and running the tool.
+
+## Current version
+
+The current stable release is **V1.6.8**. The testing channel uses the identifier `git-testing` and always tracks the newest in-development build. You can check which version you have installed at any time:
+
+```bash
+ff version
+```
+
+## Release channels
+
+| Channel | Version string | Install script |
+|---------|---------------|----------------|
+| Stable | `V1.6.8` | `install-ff.sh` |
+| Testing | `git-testing` | `install-ff-testing.sh` |
+
+Use the stable channel for everyday use. The testing channel gives you the latest features ahead of a formal release, but may contain rough edges.
+
+## Supported distributions
+
+fastfetch-config detects your distro from `/etc/os-release` and installs missing dependencies automatically using the native package manager.
+
+| Distribution family | Members |
+|---------------------|---------|
+| Arch | Arch Linux, CachyOS, EndeavourOS, Garuda, Manjaro |
+| Ubuntu / Debian | Ubuntu, Debian, Pop!\_OS, Linux Mint, elementary OS |
+| Fedora / RHEL | Fedora, CentOS, RHEL |
+| openSUSE | openSUSE Leap, openSUSE Tumbleweed |
+| Alpine | Alpine Linux |
+| Void | Void Linux |
+| Gentoo | Gentoo Linux |
+
+On any other distro, the installer will warn you and ask that you install the three dependencies manually.
+
+## Dependencies
+
+The installer checks for and installs the following packages automatically on supported distros — you do not need to install them yourself before running the installer.
+
+| Dependency | Purpose |
+|------------|---------|
+| `jq` | Reads and rewrites the JSONC config file |
+| `chafa` | Renders image files as terminal logos |
+| `imagemagick` | Converts and processes image formats for chafa |
+
+## Config file location
+
+fastfetch-config manages a single config file, located at:
+
+```
+${XDG_CONFIG_HOME:-$HOME/.config}/fastfetch/config.jsonc
+```
+
+If `XDG_CONFIG_HOME` is set in your environment, that path is used as the base; otherwise it defaults to `~/.config/fastfetch/config.jsonc`. The installer creates this file with a sensible set of default modules if it does not already exist.
+
+## Credits
+
+fastfetch-config is made by **aaronYTDev** and **Madrinth**. The project is a passion project built for fun — expect a relaxed release schedule and the occasional rough edge.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/installation">
+    Install fastfetch-config on your distro with a one-line curl command.
+  </Card>
+  <Card title="Quickstart" icon="bolt" href="/quickstart">
+    Go from a fresh install to a fully customized fastfetch output in minutes.
+  </Card>
+  <Card title="TUI Guide" icon="terminal" href="/guides/tui">
+    Learn the interactive terminal menu that covers all configuration options.
+  </Card>
+  <Card title="Available Modules" icon="list" href="/reference/available-modules">
+    Browse every system info module you can add to your fastfetch output.
+  </Card>
+</CardGroup>

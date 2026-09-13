@@ -1,0 +1,166 @@
+---
+title: "Render images as fastfetch logos with chafa"
+sidebarTitle: "Chafa Images"
+description: "Enable chafa to display PNG, JPG, and other image files as your fastfetch logo. Supports normal and raw rendering modes with auto-fit sizing."
+---
+
+Chafa is a terminal image renderer that converts raster images into coloured character-art. fastfetch-config integrates chafa so that any supported image file can be displayed as your fastfetch logo, automatically sized to fit your terminal window.
+
+## Prerequisites
+
+`chafa` must be installed on your system. The fastfetch-config installer handles this automatically on supported distributions (Arch, Ubuntu/Debian, Fedora, openSUSE, Alpine, Void, and Gentoo). If you installed fastfetch-config manually, install chafa through your package manager first.
+
+## Chafa subcommands
+
+### Show current chafa status
+
+```bash
+ff chafa
+```
+
+Prints the current chafa mode (`enabled (chafa)`, `enabled (chafaRaw)`, or `disabled`) and a usage reference.
+
+### Enable chafa with the current logo source
+
+```bash
+ff chafa on
+```
+
+Switches the logo type to `chafa` while keeping the existing `logo.source` value, then runs `set_logo_fit` to calculate optimal dimensions.
+
+### Enable chafa with a specific image file
+
+```bash
+ff chafa on <file>
+```
+
+Copies `<file>` into `~/.config/fastfetch/logos/`, sets it as the logo source, enables the `chafa` logo type, and fits the dimensions to your terminal. Example:
+
+```bash
+ff chafa on ~/Pictures/wallpaper.png
+```
+
+### Enable chafaRaw mode
+
+```bash
+ff chafa raw
+```
+
+Switches the logo type to `chafaRaw`, which uses the terminal's native raw graphics protocol for higher-fidelity rendering. The logo source is unchanged.
+
+### Enable chafaRaw with a specific image file
+
+```bash
+ff chafa raw <file>
+```
+
+Copies the image to the logos directory, sets it as the source, and enables `chafaRaw` mode:
+
+```bash
+ff chafa raw ~/Pictures/wallpaper.png
+```
+
+### Disable chafa
+
+```bash
+ff chafa off
+```
+
+Reverts the logo type to `auto`, clears the logo source, and removes the stored `width`, `height`, and `chafa` properties from the config, restoring automatic distro logo detection.
+
+### Re-fit chafa to the terminal
+
+```bash
+ff chafa fit
+```
+
+Recalculates and writes optimal `logo.width` and `logo.height` values for the current terminal size without changing the image or mode. Run this any time your terminal is resized.
+
+<Tip>
+Run `ff chafa fit` whenever you resize your terminal window or switch to a different terminal emulator. The stored dimensions are not updated automatically.
+</Tip>
+
+---
+
+## Rendering modes explained
+
+### chafa (standard)
+
+Sets `logo.type` to `chafa`. Fastfetch passes the image to chafa, which converts it to coloured Unicode block characters. This mode works in virtually any 256-colour or true-colour terminal emulator.
+
+### chafaRaw (raw graphics protocol)
+
+Sets `logo.type` to `chafaRaw`. Fastfetch passes the image using the terminal's raw inline-image protocol for a much sharper result.
+
+<Note>
+chafaRaw requires a terminal emulator that supports the Kitty graphics protocol or iTerm2 inline image protocol (e.g., Kitty, WezTerm, iTerm2, Ghostty). Standard terminals such as GNOME Terminal or xterm will render garbled output in this mode.
+</Note>
+
+---
+
+## Supported image formats
+
+fastfetch-config recognises these file extensions and routes them through chafa automatically:
+
+`png`, `jpg`, `jpeg`, `gif`, `bmp`, `webp`, `tiff`, `tif`
+
+Any file with one of these extensions that is passed to `ff chafa on <file>` or `ff logo <file>` will be handled as a chafa image rather than an ASCII art file.
+
+---
+
+## Auto-fit sizing algorithm
+
+When `set_logo_fit` runs (called automatically after any chafa command), it calculates dimensions as follows:
+
+1. Reads terminal width (`cols`) and height (`lines`) from `tput`.
+2. Runs `fastfetch --logo-type none --pipe` to measure the actual width of the info panel in characters.
+3. Ensures the info panel gets **at least 35 %** of the terminal columns:
+   - `min_info = cols × 35 / 100`
+   - `chafa_width = cols − min_info − 4`
+4. Falls back to a simpler formula if the info panel measurement returns fewer than 10 characters:
+   - `chafa_width = cols × 45–50 / 100`
+5. Calculates height as `lines − 12`.
+6. Clamps the results:
+   - Width: **20 – 80** columns
+   - Height: **5 – 40** lines
+7. Writes `logo.width` and `logo.height` to `config.jsonc`.
+
+---
+
+## Image file storage
+
+When you supply an image path to any `ff chafa on <file>` or `ff chafa raw <file>` command, the file is **copied** to `~/.config/fastfetch/logos/`. The config then references the copy so the original file can be moved or deleted without breaking your setup.
+
+---
+
+## Step-by-step: Set up chafa with an image
+
+<Steps>
+  <Step title="Confirm chafa is installed">
+    ```bash
+    chafa --version
+    ```
+    If the command is not found, install it with your package manager (e.g., `sudo pacman -S chafa` on Arch, `sudo apt install chafa` on Debian/Ubuntu).
+  </Step>
+
+  <Step title="Enable chafa with your image">
+    ```bash
+    ff chafa on ~/Pictures/my-logo.png
+    ```
+    fastfetch-config copies the image to `~/.config/fastfetch/logos/`, enables `chafa` mode, and auto-fits the dimensions to your current terminal size.
+  </Step>
+
+  <Step title="Preview the result">
+    ```bash
+    ff
+    ```
+    Run fastfetch to see the image rendered alongside your system info. If the sizing looks off, run `ff chafa fit` to recalculate for the current terminal dimensions.
+  </Step>
+
+  <Step title="Verify the configuration">
+    ```bash
+    ff status
+    ```
+    Confirm the output shows `Chafa: enabled (chafa)` and the correct logo source path.
+  </Step>
+</Steps>

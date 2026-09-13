@@ -1,0 +1,145 @@
+---
+title: "Available fastfetch modules and their default positions"
+sidebarTitle: "Modules"
+description: "Complete list of fastfetch modules supported by fastfetch-config, their default insertion positions, and configurable properties."
+---
+
+fastfetch-config tracks a set of well-known modules and knows the intended display position of each one. When you add a module with `ff module add`, it is inserted at its default slot in the `modules` array rather than appended blindly to the end, which keeps your system info output in a logical order.
+
+## Default module positions
+
+The positions below come directly from the `get_default_pos` function in the source. Position numbers are zero-based indices into the `modules` array.
+
+| Module | Default Position | Notes |
+|--------|:--------------:|-------|
+| `title` | 0 | Username@hostname header |
+| `separator` | 1 | Horizontal separator line |
+| `os` | 2 | OS / distro name; uses `keyIcon` `\uf17c` (Nerd Font Linux glyph) |
+| `host` | 3 | Hostname / machine model |
+| `kernel` | 4 | Linux kernel version |
+| `uptime` | 5 | System uptime |
+| `packages` | 6 | Installed package count |
+| `shell` | 7 | Current shell name and version |
+| `de` | 8 | Desktop environment |
+| `wm` | 9 | Window manager |
+| `cpu` | 10 | CPU model and core count |
+| `memory` | 11 | RAM usage |
+| `swap` | 12 | Swap usage |
+| `gpu` | 13 | GPU model |
+| `disk` | 14 | Disk usage; default folder: `/` |
+| `locale` | 15 | System locale |
+| `break` | 16 | Empty line spacer |
+| `colors` | 17 | Terminal color palette swatch |
+
+<Note>
+  Modules not in this list return a default position of `-1`, which means they are appended to the end of the `modules` array when added rather than inserted at a specific slot.
+</Note>
+
+## Managing modules
+
+```bash
+ff module              # List all active modules
+ff module add <name>   # Add a module at its default position
+ff module remove <name> # Remove a module from the config
+ff module move <name> <pos>  # Move to a 1-based position
+ff module toggle <name>      # Add if missing, remove if present
+ff module show <name>        # Print the raw JSON entry for a module
+ff module reset all          # Restore all modules to their defaults
+```
+
+## Special module properties
+
+### `disk` — folder paths
+
+The `disk` module stores its target mount points in a `folders` property. When added via fastfetch-config it defaults to `"/"`:
+
+```json
+{ "type": "disk", "folders": "/" }
+```
+
+To watch multiple mount points, set a comma-separated list:
+
+```bash
+ff module set disk folders "/:/home"
+```
+
+This updates the entry to:
+
+```json
+{ "type": "disk", "folders": "/:/home" }
+```
+
+### `os` — key icon
+
+The `os` module ships with a Nerd Font glyph as its `keyIcon`:
+
+```json
+{ "type": "os", "keyIcon": "\uf17c" }
+```
+
+You can change the icon to any Nerd Font character with `ff module set`:
+
+```bash
+ff module set os keyIcon ""
+```
+
+### Custom label and value (`key` / `format`)
+
+Any module can have its display label (`key`) and its displayed value (`format`) overridden:
+
+```bash
+ff module set kernel key "Linux Kernel"
+ff module set kernel format "6.x-zen"
+```
+
+The resulting JSON entry becomes an object:
+
+```json
+{ "type": "kernel", "key": "Linux Kernel", "format": "6.x-zen" }
+```
+
+## The `module eset` shortcut
+
+`ff module eset` sets both `key` and `format` in a single command, converting a plain string entry to an object automatically:
+
+```bash
+ff module eset kernel "Kernel" "6.x-zen"
+```
+
+This is equivalent to running `ff module set kernel key "Kernel"` followed by `ff module set kernel format "6.x-zen"`.
+
+## Resetting a module
+
+Resetting a module restores it to its default JSON form. The `os` and `disk` modules have special defaults; everything else reverts to a plain string:
+
+```bash
+ff module reset os    # → { "type": "os", "keyIcon": "\uf17c" }
+ff module reset disk  # → { "type": "disk", "folders": "/" }
+ff module reset cpu   # → "cpu"
+```
+
+To reset every module at once:
+
+```bash
+ff module reset all
+```
+
+## Adding modules not in the default config
+
+fastfetch supports many more modules beyond the 18 managed by fastfetch-config's position system. Any module name unknown to `get_default_pos` (position `-1`) is simply appended to the end of the `modules` array when you add it:
+
+```bash
+ff module add battery
+ff module add datetime
+ff module add weather
+```
+
+These modules will appear at the bottom of your fastfetch output. You can then use `ff module move` to reposition them:
+
+```bash
+ff module move battery 12   # Move battery to position 12 (1-based)
+```
+
+<Tip>
+  Run `fastfetch --list-modules` to see every module that fastfetch itself supports. Any of those names can be passed to `ff module add`.
+</Tip>

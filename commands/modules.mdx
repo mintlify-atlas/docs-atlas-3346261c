@@ -1,0 +1,212 @@
+---
+title: "ff module — add, remove, and configure display modules"
+sidebarTitle: "module"
+description: "Manage the information modules shown by fastfetch: add, remove, reorder, set properties, toggle, and reset individual modules or all at once."
+---
+
+Modules are the individual lines of system information that fastfetch renders — things like CPU, memory, kernel version, and shell. The `ff module` family of commands lets you control which modules appear, in what order, and how each one is formatted, all by editing the `modules` array in your `~/.config/fastfetch/config.jsonc` without ever touching the file by hand.
+
+## Default module order
+
+fastfetch-config ships with the following default module list, each assigned a canonical position used when inserting modules back after removal:
+
+| Position | Module |
+|---|---|
+| 0 | `title` |
+| 1 | `separator` |
+| 2 | `os` |
+| 3 | `host` |
+| 4 | `kernel` |
+| 5 | `uptime` |
+| 6 | `packages` |
+| 7 | `shell` |
+| 8 | `de` |
+| 9 | `wm` |
+| 10 | `cpu` |
+| 11 | `memory` |
+| 12 | `swap` |
+| 13 | `gpu` |
+| 14 | `disk` |
+| 15 | `locale` |
+| 16 | `break` |
+| 17 | `colors` |
+
+---
+
+## Subcommands
+
+### `module` / `module list` — list current modules
+
+Prints each module name in the order it currently appears in the config. Object-type modules (those with extra properties) display their `type` field.
+
+```bash
+ff module
+ff module list
+# Current modules:
+# title
+# separator
+# os
+# host
+# kernel
+# ...
+```
+
+---
+
+### `module add <name>` — add a module
+
+Inserts `<name>` at its default position in the list. If the module already exists, nothing changes. The `disk` module is always added as an object (`{type: "disk", folders: "/"}`) to preserve its required `folders` property. Modules with no known default position are appended to the end.
+
+```bash
+ff module add swap
+# Added module: swap
+
+ff module add disk
+# Added module: disk
+```
+
+---
+
+### `module remove <name>` — remove a module
+
+Removes the named module from the list entirely, whether it is stored as a plain string or an object.
+
+```bash
+ff module remove swap
+# Removed module: swap
+```
+
+---
+
+### `module move <name> <pos>` — reorder a module
+
+Moves `<name>` to the 1-based position `<pos>`. The valid range is `1` through the current total number of modules.
+
+```bash
+ff module move gpu 3
+# Moved 'gpu' to position 3
+```
+
+---
+
+### `module set <name> <key> <value>` — set a property
+
+Sets a property on the named module object. If the module is currently stored as a plain string, it is automatically promoted to an object with `{type: <name>}` first, then the key is added.
+
+```bash
+# Show disk folders for / and /home
+ff module set disk folders "/:/home"
+# Set disk.folders = /:/home
+
+# Add a custom key label to the kernel module
+ff module set kernel key "Kernel"
+# Set kernel.key = Kernel
+```
+
+---
+
+### `module eset <name> <format>` — easy-set key and format
+
+A convenience shorthand that sets both the `key` and `format` fields on a module in a single command. The `<name>` argument is used as the key label; `<format>` becomes the display value. The module must already exist in the config.
+
+```bash
+ff module eset kernel "Linux Kernel"
+# Easy-set complete: kernel -> Linux Kernel
+```
+
+This is equivalent to:
+
+```bash
+ff module set kernel key "kernel"
+ff module set kernel format "Linux Kernel"
+```
+
+---
+
+### `module toggle <name>` — add if absent, remove if present
+
+Checks whether the module exists and performs the opposite action. Useful for quickly enabling or disabling optional modules.
+
+```bash
+ff module toggle swap
+# Added module: swap   (if it was absent)
+
+ff module toggle swap
+# Removed module: swap  (if it was present)
+```
+
+---
+
+### `module show <name>` — print a module's JSON definition
+
+Prints the raw JSON representation of the named module as it exists in the config. Object modules show all their properties; string modules display the plain string.
+
+```bash
+ff module show disk
+# {
+#   "type": "disk",
+#   "folders": "/:/home"
+# }
+
+ff module show os
+# {
+#   "type": "os",
+#   "keyIcon": ""
+# }
+```
+
+---
+
+### `module reset all` — reset all modules to defaults
+
+Iterates through every known module and calls the individual reset logic for each, restoring the default list and the default object shapes (`os` gets its `keyIcon` back, `disk` gets `folders: "/"`, all others revert to plain strings).
+
+```bash
+ff module reset all
+# All modules reset to default
+```
+
+---
+
+## The `ff reset` command
+
+`ff reset` operates at a broader scope than `ff module reset`:
+
+```bash
+# Reset the entire config to factory defaults (auto-backs up first)
+ff reset
+
+# Reset a single module to its default shape
+ff reset disk
+# Reset 'disk' to default
+```
+
+A timestamped backup is created automatically before a full reset (e.g. `pre-reset-20250115-143022.jsonc`).
+
+---
+
+## Common usage examples
+
+```bash
+# Add and remove swap visibility
+ff module add swap
+ff module remove swap
+
+# Move gpu to the top of the info panel (position 3, after title and separator)
+ff module move gpu 3
+
+# Show disk usage for root and home
+ff module set disk folders "/:/home"
+
+# Apply an easy label override to the kernel module
+ff module eset kernel "Linux Kernel"
+
+# Toggle locale on or off without remembering its state
+ff module toggle locale
+
+# Inspect what disk currently looks like in the config
+ff module show disk
+
+# Blow away all customisations and start fresh
+ff module reset all
+```

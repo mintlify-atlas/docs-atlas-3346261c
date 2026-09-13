@@ -1,47 +1,214 @@
 ---
-title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+title: "Get started with fastfetch-config in minutes"
+sidebarTitle: "Quickstart"
+description: "From install to a fully customized fastfetch output in 5 steps: set a logo, pick colors, configure modules, and save a backup."
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
+This walkthrough takes you from a brand-new installation to a fastfetch output with a custom logo, your own color scheme, a personalized OS name, and a trimmed module list — all in a handful of commands. Every step uses the `ff` alias, which is installed alongside `fastfetch-config` and accepts every subcommand the full binary does.
 
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
-
-## Prerequisites
-
-Before you begin, you must have:
-
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
-
-## Get started
+<Tip>
+  Prefer clicking over typing? Run `ff tui` at any point to open the interactive TUI menu, which provides numbered options for every step in this guide. See the [TUI guide](/guides/tui) for a full walkthrough of the interactive interface.
+</Tip>
 
 <Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
+  <Step title="Install fastfetch-config">
+    Run the one-line stable installer. It detects your distro, installs missing dependencies (`jq`, `chafa`, `imagemagick`), writes the `ff` binary, creates a default config, and adds `~/.local/bin` to your PATH.
 
     ```bash
-    npm install your-package
+    curl -fsSL https://raw.githubusercontent.com/AaronYTDev/fastfetch-config/main/install-ff.sh | bash
+    ```
+
+    When the installer finishes, reload your shell so that the `ff` command becomes available:
+
+    ```bash
+    source ~/.bashrc
     ```
   </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
+
+  <Step title="Verify the installation">
+    Confirm the installed version with:
 
     ```bash
-    your-cli init
+    ff version
+    ```
+
+    Expected output:
+
+    ```
+    fastfetch-config V1.6.8
+    ```
+
+    If you see `command not found`, make sure `~/.local/bin` is on your PATH and that you reloaded your shell RC file.
+  </Step>
+
+  <Step title="Set a logo">
+    fastfetch-config can set any of fastfetch's hundreds of built-in logos by name. Let's start with the Arch Linux logo:
+
+    ```bash
+    ff logo arch
+    ```
+
+    After setting a logo, fit it to your current terminal size automatically:
+
+    ```bash
+    ff logo fit
+    ```
+
+    `logo fit` calculates the optimal dimensions based on your live terminal width and height and updates the config — no manual width/height tweaking needed. If you want to browse all available logos interactively, use the gallery:
+
+    ```bash
+    ff gallery
+    ```
+
+    The gallery lets you navigate pages of logos, preview any one of them, and apply it directly.
+  </Step>
+
+  <Step title="Set logo colors">
+    fastfetch-config supports over 150 named colors mapped to hex values. Color slots correspond to the color indices used in the logo's ASCII art. Set slot 1 to cyan and slot 2 to emerald:
+
+    ```bash
+    ff color 1 cyan
+    ff color 2 emerald
+    ```
+
+    You can also pass raw hex values directly:
+
+    ```bash
+    ff color 1 "#00FFFF"
+    ```
+
+    To see all the named colors available:
+
+    ```bash
+    ff color names
+    ```
+
+    To search for colors by partial name (e.g. all shades of blue):
+
+    ```bash
+    ff color search blue
+    ```
+
+    To review which color overrides are currently active:
+
+    ```bash
+    ff color list
     ```
   </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
+
+  <Step title="Set a custom OS name">
+    Replace the auto-detected OS name in your fastfetch output with any string you like:
 
     ```bash
-    your-cli start
+    ff osname "My Cool Linux"
+    ```
+
+    The OS name appears in the `os` module output. To revert to auto-detection at any time:
+
+    ```bash
+    ff osname auto
+    ```
+
+    Feeling adventurous? Pick a random OS name from a large built-in list:
+
+    ```bash
+    ff os random
+    ```
+  </Step>
+
+  <Step title="View and adjust your modules">
+    List every module currently active in your config:
+
+    ```bash
+    ff module
+    ```
+
+    The default config includes: `title`, `separator`, `os`, `host`, `kernel`, `uptime`, `packages`, `shell`, `de`, `wm`, `cpu`, `memory`, `swap`, `gpu`, `disk`, `locale`, `break`, and `colors`.
+
+    Add the `swap` module if it isn't already present:
+
+    ```bash
+    ff module add swap
+    ```
+
+    Remove it again if you decide you don't need it:
+
+    ```bash
+    ff module remove swap
+    ```
+
+    Modules with a known default position are inserted at the right place in the list automatically — no manual index juggling required.
+  </Step>
+
+  <Step title="Save a backup">
+    Before you start experimenting further, save the config you just built so you can restore it any time:
+
+    ```bash
+    ff backup my-first-config
+    ```
+
+    The config is saved to `~/.config/fastfetch/backups/my-first-config.jsonc`. To list all saved backups:
+
+    ```bash
+    ff backup list
+    ```
+
+    To restore a backup:
+
+    ```bash
+    ff restore my-first-config
+    ```
+  </Step>
+
+  <Step title="Run fastfetch with your new config">
+    Run `ff` with no arguments to invoke fastfetch using the configuration you just built:
+
+    ```bash
+    ff
+    ```
+
+    You should see your system info output with the Arch logo, your chosen colors, your custom OS name, and your adjusted module list. To get a quick summary of the current config state without running fastfetch:
+
+    ```bash
+    ff status
     ```
   </Step>
 </Steps>
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
+<Note>
+  The `ff tui` command opens an interactive menu that covers every option in this guide — logos, colors, OS name, modules, backups, and more — without needing to remember subcommand syntax. See the [TUI guide](/guides/tui) for a complete walkthrough.
+</Note>
 
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
-</Tip>
+## Quick-reference command table
+
+The table below summarizes the `ff` alias shortcuts you'll reach for most often.
+
+| Command | What it does |
+|---------|-------------|
+| `ff` | Run fastfetch with your current config |
+| `ff version` | Show the installed fastfetch-config version |
+| `ff status` | Show current logo, OS name, colors, and modules |
+| `ff tui` | Open the interactive TUI menu |
+| `ff logo <name>` | Set a logo by name (built-in or bundled) |
+| `ff logo fit` | Resize the current logo to fit the terminal |
+| `ff logo auto` | Revert to fastfetch auto logo detection |
+| `ff gallery` | Browse and preview built-in logos interactively |
+| `ff color <slot> <color>` | Set a logo color slot (1–9) by name or hex |
+| `ff color list` | Show active logo color overrides |
+| `ff color names` | List all 150+ named colors |
+| `ff color reset` | Clear all logo color overrides |
+| `ff osname <text>` | Set a custom OS name string |
+| `ff osname auto` | Restore auto OS name detection |
+| `ff os random` | Pick a random OS name from the built-in list |
+| `ff module` | List active modules |
+| `ff module add <name>` | Add a module at its default position |
+| `ff module remove <name>` | Remove a module from the config |
+| `ff module move <name> <pos>` | Move a module to a specific 1-based position |
+| `ff backup [name]` | Save a named (or timestamped) config backup |
+| `ff backup list` | List all saved backups |
+| `ff restore <name>` | Restore a previously saved backup |
+| `ff reset` | Reset the entire config to defaults |
+| `ff update` | Update to the latest stable release |
+| `ff update check` | Check for an available update without installing |
+| `ff update testing` | Switch to the testing build |
+| `ff doctor` | Check for common setup problems |
