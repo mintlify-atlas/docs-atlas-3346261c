@@ -1,6 +1,6 @@
 ---
-title: "ff backup — save and restore fastfetch configs"
-sidebarTitle: "backup"
+title: "ff backup and restore — manage fastfetch config snapshots"
+sidebarTitle: "Backup"
 description: "Save timestamped backups of your fastfetch config, list and restore them, remove old ones, and diff the current config against a backup."
 ---
 
@@ -74,6 +74,19 @@ Removes the named backup permanently. The `.jsonc` extension is added automatica
 ```bash
 ff backup remove before-chafa-experiment
 # Removed backup: before-chafa-experiment
+```
+
+---
+
+### `ff restore list` — list available backups
+
+An alias for `ff backup list`. Prints every `.jsonc` file in the backup directory alongside its last-modified timestamp. Useful when you need the list in the same command chain as a restore.
+
+```bash
+ff restore list
+# Available backups:
+#   backup-20250115-143022          (2025-01-15 14:30:22)
+#   before-chafa-experiment         (2025-01-15 15:01:44)
 ```
 
 ---

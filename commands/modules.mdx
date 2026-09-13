@@ -1,6 +1,6 @@
 ---
 title: "ff module — add, remove, and configure display modules"
-sidebarTitle: "module"
+sidebarTitle: "Module"
 description: "Manage the information modules shown by fastfetch: add, remove, reorder, set properties, toggle, and reset individual modules or all at once."
 ---
 
@@ -36,6 +36,8 @@ fastfetch-config ships with the following default module list, each assigned a c
 ## Subcommands
 
 ### `module` / `module list` — list current modules
+
+The `ff module` command also accepts `ff var` as an alias — both invoke identical logic.
 
 Prints each module name in the order it currently appears in the config. Object-type modules (those with extra properties) display their `type` field.
 
@@ -137,7 +139,7 @@ ff module toggle swap
 
 ---
 
-### `module show <name>` — print a module's JSON definition
+### `module show <name>` / `module get <name>` — print a module's JSON definition
 
 Prints the raw JSON representation of the named module as it exists in the config. Object modules show all their properties; string modules display the plain string.
 

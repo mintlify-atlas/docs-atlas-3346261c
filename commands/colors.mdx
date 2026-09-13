@@ -1,6 +1,6 @@
 ---
-title: "ff color — set logo color slots 1-9"
-sidebarTitle: "color"
+title: "ff color — set and reset logo color slot overrides"
+sidebarTitle: "Color"
 description: "Override logo color slots 1 through 9 using named colors, hex codes, or ANSI codes. fastfetch-config ships with 150+ named colors."
 ---
 
@@ -17,6 +17,10 @@ Color name resolution is **case-insensitive** — `Cyan`, `cyan`, and `CYAN` all
 ### `color <slot> <color>` — set a color slot
 
 Sets logo color slot `<slot>` (an integer from 1 to 9) to `<color>`. Named colors are resolved to their hex values before writing; hex codes and ANSI codes are stored as provided.
+
+<Warning>
+If `<slot>` is not a number, the tool prints `Warning: slot '<slot>' is not a number` and skips the write. If `<slot>` is a number but outside the 1–9 range, it prints `Warning: slot '<slot>' is outside the typical 1-9 range` and still skips the write. Always use an integer between 1 and 9.
+</Warning>
 
 ```bash
 ff color 1 cyan

@@ -1,7 +1,7 @@
 ---
 title: "Available fastfetch modules and their default positions"
 sidebarTitle: "Modules"
-description: "Complete list of fastfetch modules supported by fastfetch-config, their default insertion positions, and configurable properties."
+description: "Complete list of fastfetch modules managed by fastfetch-config, their default insertion positions, and configurable JSON properties."
 ---
 
 fastfetch-config tracks a set of well-known modules and knows the intended display position of each one. When you add a module with `ff module add`, it is inserted at its default slot in the `modules` array rather than appended blindly to the end, which keeps your system info output in a logical order.
@@ -100,13 +100,13 @@ The resulting JSON entry becomes an object:
 
 ## The `module eset` shortcut
 
-`ff module eset` sets both `key` and `format` in a single command, converting a plain string entry to an object automatically:
+`ff module eset` sets both `key` and `format` in a single command, converting a plain string entry to an object automatically. It takes two arguments: the module name and the format value. The key label is set to the module name itself:
 
 ```bash
-ff module eset kernel "Kernel" "6.x-zen"
+ff module eset kernel "6.x-zen"
 ```
 
-This is equivalent to running `ff module set kernel key "Kernel"` followed by `ff module set kernel format "6.x-zen"`.
+This is equivalent to running `ff module set kernel key "kernel"` followed by `ff module set kernel format "6.x-zen"`.
 
 ## Resetting a module
 

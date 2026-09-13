@@ -1,5 +1,5 @@
 ---
-title: "Render images as fastfetch logos with chafa"
+title: "Display image files as your fastfetch logo with chafa"
 sidebarTitle: "Chafa Images"
 description: "Enable chafa to display PNG, JPG, and other image files as your fastfetch logo. Supports normal and raw rendering modes with auto-fit sizing."
 ---
@@ -114,9 +114,9 @@ When `set_logo_fit` runs (called automatically after any chafa command), it calc
 
 1. Reads terminal width (`cols`) and height (`lines`) from `tput`.
 2. Runs `fastfetch --logo-type none --pipe` to measure the actual width of the info panel in characters.
-3. Ensures the info panel gets **at least 35 %** of the terminal columns:
+3. If the info panel measurement returns 10 or more characters, uses it as the initial width value, then caps it so the info panel keeps at least 35 % of the terminal columns:
    - `min_info = cols × 35 / 100`
-   - `chafa_width = cols − min_info − 4`
+   - `chafa_width = min(info_width, cols − min_info − 4)`
 4. Falls back to a simpler formula if the info panel measurement returns fewer than 10 characters:
    - `chafa_width = cols × 45–50 / 100`
 5. Calculates height as `lines − 12`.

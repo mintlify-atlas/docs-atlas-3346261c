@@ -1,5 +1,5 @@
 ---
-title: "Troubleshoot fastfetch-config setup issues"
+title: "Troubleshoot and diagnose fastfetch-config setup issues"
 sidebarTitle: "Troubleshooting"
 description: "Diagnose and fix common fastfetch-config problems: missing dependencies, config file errors, PATH issues, logo rendering, and chafa setup."
 ---
@@ -10,7 +10,7 @@ Most fastfetch-config problems fall into a small set of categories: a missing de
 
 Run `ff doctor` as your first troubleshooting step. It checks the most common failure points and prints a pass/fail result for each:
 
-```
+```text
 Checking fastfetch-config setup...
   [OK] Config file is valid JSON
   [OK] Logos directory exists
@@ -18,10 +18,11 @@ Checking fastfetch-config setup...
 All good!
 ```
 
-If any check fails it prints `[FAIL]` with a description. For a deeper diagnostic that also prints all paths, current logo, OS name, chafa state, and module list, run:
+If any check fails it prints `[FAIL]` with a description. For a deeper diagnostic that also prints jq version, fastfetch version, config path, logos and backups count, shell, terminal, current logo, OS name, chafa state, and module list, run:
 
 ```bash
-ff diag
+ff diag        # short form
+ff diagnostics # long form (same output)
 ```
 
 ---

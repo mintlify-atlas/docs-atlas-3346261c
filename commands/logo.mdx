@@ -1,7 +1,7 @@
 ---
-title: "ff logo — set and manage your fastfetch logo"
-sidebarTitle: "logo"
-description: "Use ff logo to set built-in logos, custom ASCII art files, or image files. Supports auto-detection, manual sizing, and preview."
+title: "ff logo — set, preview, and resize your fastfetch logo"
+sidebarTitle: "Logo"
+description: "Use ff logo to set built-in logos, custom ASCII art, or image files. Supports auto-detection, fit-to-terminal sizing, and live preview."
 ---
 
 The `ff logo` command controls every aspect of the logo displayed beside your fastfetch output. You can choose from fastfetch's own library of built-in distro logos, point to a custom ASCII art file stored in `~/.config/fastfetch/logos/`, render a full image through [chafa](https://hpjansson.org/chafa/), or simply let fastfetch detect the right logo for your system automatically. Dimension helpers let you size the logo to your exact terminal without manual trial and error.
@@ -37,6 +37,19 @@ Logo type is inferred from the file extension:
 | `png`, `jpg`, `jpeg`, `gif`, `bmp`, `webp`, `tiff`, `tif` | `chafa` (image renderer) |
 | Any other extension or no extension | `file` (plain text/ASCII art) |
 | Bare name with no matching file | `builtin` |
+
+---
+
+### `logo random` / `logo rand` — redirects to OS name random
+
+Running `ff logo random` (or `ff logo rand`) does **not** set a random logo. Instead it prints a message directing you to the correct command for picking a random OS name.
+
+```bash
+ff logo random
+# Use 'ff os random' for random OS names instead.
+```
+
+Use `ff os random` or `ff osname random` to pick a random distro name from the built-in list.
 
 ---
 

@@ -1,7 +1,7 @@
 ---
-title: "ff export, import, status, and search commands"
+title: "ff status, export, import, search, and diagnostic commands"
 sidebarTitle: "Config Management"
-description: "Export and import fastfetch configs between machines, view current settings, search modules and colors, and check your config file path."
+description: "Export and import fastfetch configs between machines, view current settings, search modules and colors, and run diagnostics or get help."
 ---
 
 Beyond logo and module management, fastfetch-config provides a set of utility commands for viewing the state of your configuration, moving configs between machines, diagnosing problems, and searching for specific settings. These commands form the operational layer of the tool — helpful for daily use, dotfile management, and troubleshooting.
@@ -48,21 +48,29 @@ ff stats
 
 ---
 
-### `ff config-path` — print the config file path
+### `ff config-path` / `ff configpath` — print the config file path
 
-Outputs the absolute path to the active `config.jsonc`. Useful for scripting or passing the path to another tool.
+Outputs the absolute path to the active `config.jsonc`. Both spellings (`config-path` and `configpath`) are accepted. Useful for scripting or passing the path to another tool.
 
 ```bash
 ff config-path
+# /home/user/.config/fastfetch/config.jsonc
+
+ff configpath
 # /home/user/.config/fastfetch/config.jsonc
 ```
 
 ---
 
-### `ff version` — print version string
+### `ff version` / `ff --version` — print version string
+
+Both `ff version` and `ff --version` print the installed version of fastfetch-config.
 
 ```bash
 ff version
+# fastfetch-config V1.6.8
+
+ff --version
 # fastfetch-config V1.6.8
 ```
 
@@ -70,9 +78,9 @@ ff version
 
 ## Export and import
 
-### `ff export` — export config to the current directory
+### `ff export` / `ff export-config` — export config to the current directory
 
-Copies the active config to a file named `fastfetch-config-export-YYYYMMDD.jsonc` in the current working directory.
+Both `ff export` and `ff export-config` are accepted. Copies the active config to a file named `fastfetch-config-export-YYYYMMDD.jsonc` in the current working directory.
 
 ```bash
 ff export
@@ -90,12 +98,15 @@ ff export ~/dotfiles/fastfetch/config.jsonc
 
 ---
 
-### `ff import <file>` — import a config file
+### `ff import <file>` / `ff import-config <file>` — import a config file
 
-Copies `<file>` over the active config. A pre-import backup (`pre-import-YYYYMMDD-HHMMSS.jsonc`) is created automatically before anything is overwritten.
+Both `ff import` and `ff import-config` are accepted. Copies `<file>` over the active config. A pre-import backup (`pre-import-YYYYMMDD-HHMMSS.jsonc`) is created automatically before anything is overwritten.
 
 ```bash
 ff import ~/dotfiles/fastfetch/config.jsonc
+# Config imported from /home/user/dotfiles/fastfetch/config.jsonc (backup saved)
+
+ff import-config ~/dotfiles/fastfetch/config.jsonc
 # Config imported from /home/user/dotfiles/fastfetch/config.jsonc (backup saved)
 ```
 
@@ -121,12 +132,14 @@ ff search blue
 
 ## Diagnostics
 
-### `ff help` — print full usage text
+### `ff help` / `ff --help` / `ff -h` — print full usage text
 
-Displays the complete command reference directly in the terminal.
+All three forms display the complete command reference directly in the terminal.
 
 ```bash
 ff help
+ff --help
+ff -h
 ```
 
 ---
